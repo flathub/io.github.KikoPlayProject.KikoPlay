@@ -1,6 +1,6 @@
 app-id: io.github.KikoPlayProject.KikoPlay
 runtime: org.kde.Platform
-runtime-version: '5.15-23.08'
+runtime-version: 5.15-23.08
 sdk: org.kde.Sdk
 command: KikoPlay
 finish-args:
@@ -42,7 +42,8 @@ modules:
       - type: patch
         path: patch/0003-stop-spamming-logs.patch
     post-install:
-      - install -Dm644 flatpak/1.0.0/io.github.KikoPlayProject.KikoPlay.metainfo.xml -t $FLATPAK_DEST/share/metainfo/
+      - install -Dm644 flatpak/1.0.0/io.github.KikoPlayProject.KikoPlay.metainfo.xml
+        -t $FLATPAK_DEST/share/metainfo/
       - install -Dm644 flatpak/1.0.0/io.github.KikoPlayProject.KikoPlay.png -t $FLATPAK_DEST/share/icons/hicolor/128x128/apps/
     modules:
       - name: libmpv
@@ -92,7 +93,7 @@ modules:
             sources:
               - type: git
                 url: https://code.videolan.org/videolan/x264.git
-                commit: a8b68ebfaa68621b5ac8907610d3335971839d52
+                commit: c196240409e4d7c01b47448d93b1f9683aaa7cf7
                 # Every commit to the master branch is considered a release
                 # https://code.videolan.org/videolan/x264/-/issues/35
                 x-checker-data:
@@ -284,8 +285,8 @@ modules:
           - install -Dm755 src/aria2c /app/bin
         sources:
           - type: archive
-            url: https://github.com/aria2/aria2/releases/download/release-1.36.0/aria2-1.36.0.tar.xz
-            sha256: 58d1e7608c12404f0229a3d9a4953d0d00c18040504498b483305bcb3de907a5
+            url: https://github.com/aria2/aria2/releases/download/release-1.37.0/aria2-1.37.0.tar.xz
+            sha256: 60a420ad7085eb616cb6e2bdf0a7206d68ff3d37fb5a956dc44242eb2f79b66b
             x-checker-data:
               type: anitya
               project-id: 109
@@ -323,7 +324,7 @@ modules:
           - type: git
             url: https://github.com/KikoPlayProject/KikoPlayScript.git
             commit: 20ec0005d405ada1b6f0fa1587c2a0aa9114edc8
-  
+
       - name: kikoplay-app
         buildsystem: simple
         build-options:
