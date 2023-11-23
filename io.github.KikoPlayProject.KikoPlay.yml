@@ -36,11 +36,9 @@ modules:
         url: https://github.com/KikoPlayProject/KikoPlay.git
         commit: 025b5fef979a29a875c09fddc3263f13b11c1940
       - type: patch
-        path: patch/0001-prebuild.patch
+        path: patch/0001-install.patch
       - type: patch
-        path: patch/0002-install.patch
-      - type: patch
-        path: patch/0003-stop-spamming-logs.patch
+        path: patch/0002-stop-spamming-logs.patch
     post-install:
       - install -Dm644 flatpak/1.0.0/io.github.KikoPlayProject.KikoPlay.metainfo.xml
         -t $FLATPAK_DEST/share/metainfo/
