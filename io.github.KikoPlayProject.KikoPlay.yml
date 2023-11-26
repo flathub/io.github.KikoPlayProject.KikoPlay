@@ -239,6 +239,8 @@ modules:
           - name: libplacebo
             buildsystem: meson
             config-opts:
+              - -Dd3d11=disabled
+              - -Ddemos=False
               - -Dvulkan=enabled
               - -Dshaderc=enabled
             cleanup:
