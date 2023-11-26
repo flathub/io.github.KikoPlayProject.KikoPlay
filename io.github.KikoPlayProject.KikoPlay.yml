@@ -124,10 +124,10 @@ modules:
               - /sbin
               - /bin
             config-opts:
-              - --Dbpf=disabled
-              - --Dudevdir=/app/lib/udev
-              - --Ddoxygen-html=false
-              - --Ddoxygen-doc=disabled
+              - -Dbpf=disabled
+              - -Dudevdir=/app/lib/udev
+              - -Ddoxygen-html=false
+              - -Ddoxygen-doc=disabled
             sources:
               - type: archive
                 url: https://linuxtv.org/downloads/v4l-utils/v4l-utils-1.26.0.tar.xz
