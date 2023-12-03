@@ -20,7 +20,6 @@ cleanup:
   - '*.la'
   - /include
   - /lib/cmake
-  - /lib/debug
   - /lib/pkgconfig
   - /man
   - /share/man
