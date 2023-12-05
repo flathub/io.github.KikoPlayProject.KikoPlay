@@ -29,7 +29,6 @@ modules:
     config-opts:
       - LIBS+=-L/app/lib
     sources:
-    #switch to tags after new release
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlay.git
         commit: 025b5fef979a29a875c09fddc3263f13b11c1940
@@ -143,7 +142,6 @@ modules:
                   project-id: 223796
                   stable-only: true
                   url-template: https://github.com/FFmpeg/nv-codec-headers/archive/refs/tags/n$version.tar.gz
-          # need ffmpeg program for cutting videos
           - name: ffmpeg
             cleanup:
               - /share/ffmpeg/examples
@@ -339,8 +337,6 @@ modules:
               project-id: 109
               url-template: https://github.com/aria2/aria2/releases/download/release-$version/aria2-$version.tar.xz
               stable-only: true
-      # liblua.a for KikoPlay build
-      # shared-modules/lua5.3 dont have liblua.a
       - name: lua53
         no-autogen: true
         make-args:
