@@ -7,7 +7,6 @@ finish-args:
   - --device=dri
   - --share=ipc
   - --share=network
-  # aria2c download
   - --filesystem=xdg-videos
   - --filesystem=xdg-download
   - --socket=x11
@@ -90,8 +89,6 @@ modules:
               - type: git
                 url: https://code.videolan.org/videolan/x264.git
                 commit: c1c9931dc87289b8aeba78150467f17bdb97d019
-                # Every commit to the master branch is considered a release
-                # https://code.videolan.org/videolan/x264/-/issues/35
                 x-checker-data:
                   type: json
                   url: https://code.videolan.org/api/v4/projects/536/repository/commits
@@ -363,7 +360,6 @@ modules:
           no-debuginfo: true
         build-commands:
           - mkdir -p /app/bin/extension/script
-            # script
           - cp -a bgm_calendar /app/bin/extension/script
           - cp -a danmu /app/bin/extension/script
           - cp -a library /app/bin/extension/script
