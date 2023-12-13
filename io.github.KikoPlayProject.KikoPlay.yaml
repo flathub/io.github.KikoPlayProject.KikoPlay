@@ -120,8 +120,8 @@ modules:
               - -Ddoxygen-doc=disabled
             sources:
               - type: archive
-                url: https://linuxtv.org/downloads/v4l-utils/v4l-utils-1.26.0.tar.xz
-                sha256: dab463dc0215e55b2ef1f7a7ab230c3ae8102ea029547eefb4478da0fa8af505
+                url: https://linuxtv.org/downloads/v4l-utils/v4l-utils-1.26.1.tar.xz
+                sha256: 4a71608c0ef7df2931176989e6d32b445c0bdc1030a2376d929c8ca6e550ec4e
                 x-checker-data:
                   type: anitya
                   project-id: 9998
