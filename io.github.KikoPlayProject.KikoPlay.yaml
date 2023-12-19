@@ -22,13 +22,13 @@ cleanup:
   - /lib/pkgconfig
   - /man
   - /share/man
-  - /share/gtk-doc
 modules:
   - name: KikoPlay
     buildsystem: qmake
     config-opts:
       - LIBS+=-L/app/lib
     sources:
+    #switch to tags after new release
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlay.git
         commit: 025b5fef979a29a875c09fddc3263f13b11c1940
@@ -40,8 +40,8 @@ modules:
         path: patch/0003-stop-spamming-logs.patch
     post-install:
       - install -Dm644 flatpak/1.0.0/io.github.KikoPlayProject.KikoPlay.metainfo.xml
-        -t /app/share/metainfo/
-      - install -Dm644 flatpak/1.0.0/io.github.KikoPlayProject.KikoPlay.png -t /app/share/icons/hicolor/128x128/apps/
+        -t $FLATPAK_DEST/share/metainfo/
+      - install -Dm644 flatpak/1.0.0/io.github.KikoPlayProject.KikoPlay.png -t $FLATPAK_DEST/share/icons/hicolor/128x128/apps/
     modules:
       - name: libmpv
         cleanup:
@@ -61,13 +61,13 @@ modules:
           - -Dmanpage-build=disabled
         sources:
           - type: archive
-            url: https://github.com/mpv-player/mpv/archive/refs/tags/v0.37.0.tar.gz
-            sha256: 1d2d4adbaf048a2fa6ee134575032c4b2dad9a7efafd5b3e69b88db935afaddf
-            x-checker-data:
-              type: anitya
-              project-id: 5348
-              stable-only: true
-              url-template: https://github.com/mpv-player/mpv/archive/refs/tags/v$version.tar.gz
+            url: https://github.com/mpv-player/mpv/archive/refs/tags/v0.36.0.tar.gz
+            sha256: 29abc44f8ebee013bb2f9fe14d80b30db19b534c679056e4851ceadf5a5e8bf6
+            # x-checker-data:
+            #   type: anitya
+            #   project-id: 5348
+            #   stable-only: true
+            #   url-template: https://github.com/mpv-player/mpv/archive/refs/tags/v$version.tar.gz
         modules:
           - name: libXpresent
             buildsystem: autotools
@@ -87,7 +87,9 @@ modules:
             sources:
               - type: git
                 url: https://code.videolan.org/videolan/x264.git
-                commit: c1c9931dc87289b8aeba78150467f17bdb97d019
+                commit: c196240409e4d7c01b47448d93b1f9683aaa7cf7
+                # Every commit to the master branch is considered a release
+                # https://code.videolan.org/videolan/x264/-/issues/35
                 x-checker-data:
                   type: json
                   url: https://code.videolan.org/api/v4/projects/536/repository/commits
@@ -109,24 +111,24 @@ modules:
                   type: git
                   tag-pattern: ^([\d.]+)$
           - name: libv4l2
-            buildsystem: meson
             cleanup:
+              - /share/icons
+              - /share/applications
               - /sbin
               - /bin
             config-opts:
-              - -Dbpf=disabled
-              - -Dudevdir=/app/lib/udev
-              - -Ddoxygen-html=false
-              - -Ddoxygen-doc=disabled
+              - --disable-static
+              - --disable-bpf
+              - --with-udevdir=/app/lib/udev
             sources:
               - type: archive
-                url: https://linuxtv.org/downloads/v4l-utils/v4l-utils-1.26.1.tar.xz
-                sha256: 4a71608c0ef7df2931176989e6d32b445c0bdc1030a2376d929c8ca6e550ec4e
+                url: https://linuxtv.org/downloads/v4l-utils/v4l-utils-1.24.1.tar.bz2
+                sha256: cbb7fe8a6307f5ce533a05cded70bb93c3ba06395ab9b6d007eb53b75d805f5b
                 x-checker-data:
                   type: anitya
                   project-id: 9998
                   stable-only: true
-                  url-template: https://linuxtv.org/downloads/v4l-utils/v4l-utils-$version.tar.xz
+                  url-template: https://linuxtv.org/downloads/v4l-utils/v4l-utils-$version.tar.bz2
           - name: nv-codec-headers
             cleanup:
               - '*'
@@ -163,6 +165,7 @@ modules:
               - --enable-libvpx
               - --enable-libmp3lame
               - --enable-libwebp
+              - --enable-libjxl
               - --enable-libx264
               - --enable-libx265
             sources:
@@ -241,86 +244,23 @@ modules:
                   project-id: 9265
                   stable-only: true
                   url-template: https://www.freedesktop.org/software/uchardet/releases/uchardet-$version.tar.xz
-          - name: yt-dlp
-            no-autogen: true
-            no-make-install: true
-            make-args:
-              - yt-dlp
-              - PYTHON=/usr/bin/python3
-            post-install:
-              - install yt-dlp /app/bin
-            sources:
-              - type: archive
-                url: https://github.com/yt-dlp/yt-dlp/archive/refs/tags/2023.11.16.tar.gz
-                sha256: b689ced48b0da4944ce8a157e99e2349bbbf80ac7496d48825cfad02a410fa1e
-                x-checker-data:
-                  type: anitya
-                  project-id: 143399
-                  stable-only: true
-                  url-template: https://github.com/yt-dlp/yt-dlp/archive/refs/tags/$version.tar.gz
-          - name: libplacebo
-            buildsystem: meson
-            config-opts:
-              - -Dvulkan=disabled
-              - -Dd3d11=disabled
-              - -Ddemos=False
-            sources:
-              - type: archive
-                url: https://code.videolan.org/videolan/libplacebo/-/archive/v6.338.1/libplacebo-v6.338.1.tar.gz
-                sha256: f748bf9385f4c228e1379d7d1bed13581176bfdc54eb99f4abe22e649f8dc93f
-                x-checker-data:
-                  type: anitya
-                  project-id: 20101
-                  stable-only: true
-                  url-template: https://code.videolan.org/videolan/libplacebo/-/archive/v$version/libplacebo-v$version.tar.gz
-              - type: archive
-                url: https://github.com/pallets/markupsafe/archive/refs/tags/2.1.3.tar.gz
-                sha256: b209e55e953eabf4bc31e0c9f3182af03b40e5bf5afed652f72b9b7ac02c0b30
-                dest: 3rdparty/markupsafe
-              - type: archive
-                url: https://github.com/pallets/jinja/archive/refs/tags/3.1.2.tar.gz
-                sha256: ecae76cd1a064d40eb46c5375f07953d747f4d65b68cd3fa5f02c91714b799fc
-                dest: 3rdparty/jinja
-              - type: archive
-                url: https://github.com/Dav1dde/glad/archive/refs/tags/v2.0.4.tar.gz
-                sha256: 02629644c242dcc27c58222bd2c001d5e2f3765dbbcfd796542308bddebab401
-                dest: 3rdparty/glad
-            modules:
-              - name: glslang
-                buildsystem: cmake-ninja
-                config-opts:
-                  - -DBUILD_SHARED_LIBS=ON
-                cleanup:
-                  - /bin
-                  - /include
-                  - /lib/cmake
-                sources:
-                  - type: archive
-                    url: https://github.com/KhronosGroup/glslang/archive/13.1.1.tar.gz
-                    sha256: 1c4d0a5a38c8aaf89a2d7e6093be734320599f5a6775b2726beeb05b0c054e66
-                    x-checker-data:
-                      type: anitya
-                      project-id: 205796
-                      stable-only: true
-                      url-template: https://github.com/KhronosGroup/glslang/archive/$version.tar.gz
-                  - type: archive
-                    url: https://github.com/KhronosGroup/SPIRV-Tools/archive/refs/tags/sdk-1.3.261.1.tar.gz
-                    sha256: ead95c626ad482882a141d1aa0ce47b9453871f72c42c0b28d39c82f60a52008
-                    dest: External/spirv-tools
-                    x-checker-data:
-                      type: anitya
-                      stable-only: true
-                      project-id: 334920
-                      url-template: https://github.com/KhronosGroup/SPIRV-Tools/archive/refs/tags/sdk-$version.tar.gz
-                  - type: archive
-                    url: https://github.com/KhronosGroup/SPIRV-Headers/archive/refs/tags/sdk-1.3.261.1.tar.gz
-                    sha256: 32b4c6ae6a2fa9b56c2c17233c8056da47e331f76e117729925825ea3e77a739
-                    dest: External/spirv-tools/external/spirv-headers
-                    x-checker-data:
-                      type: anitya
-                      stable-only: true
-                      project-id: 334920
-                      url-template: https://github.com/KhronosGroup/SPIRV-Headers/archive/refs/tags/sdk-$version.tar.gz
+      - name: yt-dlp
+        no-autogen: true
+        no-make-install: true
+        make-args:
+          - yt-dlp
+          - PYTHON=/usr/bin/python3
+        post-install:
+          - install yt-dlp /app/bin
+        sources:
+          - type: archive
+            url: https://github.com/yt-dlp/yt-dlp/archive/refs/tags/2023.11.16.tar.gz
+            sha256: b689ced48b0da4944ce8a157e99e2349bbbf80ac7496d48825cfad02a410fa1e
+            x-checker-data:
+              type: anitya
+              project-id: 143399
+              stable-only: true
+              url-template: https://github.com/yt-dlp/yt-dlp/archive/refs/tags/$version.tar.gz
       - name: aria2
         config-opts:
           - --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt
@@ -337,6 +277,8 @@ modules:
               project-id: 109
               url-template: https://github.com/aria2/aria2/releases/download/release-$version/aria2-$version.tar.xz
               stable-only: true
+      # liblua.a for KikoPlay build
+      # shared-modules/lua5.3 dont have liblua.a
       - name: lua53
         no-autogen: true
         make-args:
@@ -355,11 +297,12 @@ modules:
         build-options:
           no-debuginfo: true
         build-commands:
-          - mkdir -p /app/bin/extension/script
-          - cp -a bgm_calendar /app/bin/extension/script
-          - cp -a danmu /app/bin/extension/script
-          - cp -a library /app/bin/extension/script
-          - cp -a resource /app/bin/extension/script
+          - mkdir -p $FLATPAK_DEST/bin/extension/script
+            # script
+          - cp -a bgm_calendar $FLATPAK_DEST/bin/extension/script
+          - cp -a danmu $FLATPAK_DEST/bin/extension/script
+          - cp -a library $FLATPAK_DEST/bin/extension/script
+          - cp -a resource $FLATPAK_DEST/bin/extension/script
         sources:
           - type: git
             url: https://github.com/KikoPlayProject/KikoPlayScript.git
@@ -369,7 +312,7 @@ modules:
         build-options:
           no-debuginfo: true
         build-commands:
-          - cp -a app /app/bin/extension/
+          - cp -a app $FLATPAK_DEST/bin/extension/
         sources:
           - type: git
             url: https://github.com/KikoPlayProject/KikoPlayApp.git
