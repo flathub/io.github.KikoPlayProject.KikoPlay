@@ -57,7 +57,7 @@ modules:
           - -Dlua=disabled
           - -Ddebug=false
           - -Dbuild-date=false
-          - -Dalsa=disabled
+          - -Dcplayer=false
           - -Dmanpage-build=disabled
         sources:
           - type: archive
