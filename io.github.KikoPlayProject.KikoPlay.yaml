@@ -57,7 +57,7 @@ modules:
           - -Dlua=disabled
           - -Ddebug=false
           - -Dbuild-date=false
-          - -Dalsa=disabled
+          - -Dcplayer=false
           - -Dmanpage-build=disabled
         sources:
           - type: archive
@@ -261,7 +261,7 @@ modules:
           - name: libplacebo
             buildsystem: meson
             config-opts:
-              - -Dvulkan=disabled
+              # - -Dvulkan=disabled
               - -Dd3d11=disabled
               - -Ddemos=False
             sources:
