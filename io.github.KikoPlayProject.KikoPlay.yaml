@@ -197,22 +197,6 @@ modules:
                       project-id: 232764
                       stable-only: true
                       url-template: https://github.com/libjxl/libjxl/archive/refs/tags/v$version.tar.gz
-                modules:
-                  - name: highway
-                    buildsystem: cmake-ninja
-                    config-opts:
-                      - -DCMAKE_BUILD_TYPE=RelWithDebInfo
-                      - -DBUILD_TESTING=OFF
-                      - -DBUILD_SHARED_LIBS=ON
-                    sources:
-                      - type: archive
-                        url: https://github.com/google/highway/archive/refs/tags/1.0.7.tar.gz
-                        sha256: 5434488108186c170a5e2fca5e3c9b6ef59a1caa4d520b008a9b8be6b8abe6c5
-                        x-checker-data:
-                          type: anitya
-                          project-id: 205809
-                          stable-only: true
-                          url-template: https://github.com/google/highway/archive/refs/tags/$version.tar.gz
           - name: libass
             config-opts:
               - --disable-static
