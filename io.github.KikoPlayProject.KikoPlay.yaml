@@ -153,7 +153,7 @@ modules:
               - --enable-gnutls
               - --enable-gpl
               - --enable-version3
-              - --enable-encoder=png,libwebp,libjxl
+              - --enable-encoder=png,libwebp
               - --enable-libv4l2
               - --enable-libdav1d
               - --enable-libfontconfig
@@ -174,29 +174,6 @@ modules:
                   project-id: 5405
                   stable-only: true
                   url-template: https://ffmpeg.org/releases/ffmpeg-$version.tar.gz
-            modules:
-              - name: libjxl
-                buildsystem: cmake-ninja
-                config-opts:
-                  - -DBUILD_TESTING=OFF
-                  - -DJPEGXL_ENABLE_BENCHMARK=OFF
-                  - -DJPEGXL_ENABLE_COVERAGE=OFF
-                  - -DJPEGXL_ENABLE_EXAMPLES=OFF
-                  - -DJPEGXL_ENABLE_FUZZERS=OFF
-                  - -DJPEGXL_ENABLE_JNI=OFF
-                  - -DJPEGXL_ENABLE_SJPEG=OFF
-                  - -DJPEGXL_ENABLE_SKCMS=OFF
-                  - -DJPEGXL_ENABLE_TOOLS=OFF
-                  - -DJPEGXL_ENABLE_VIEWERS=OFF
-                sources:
-                  - type: archive
-                    url: https://github.com/libjxl/libjxl/archive/refs/tags/v0.9.0.tar.gz
-                    sha256: d83bbe188d8fa9725bb75109c922c37fcff8c3b802808f3a6c2c14aaf8337d9f
-                    x-checker-data:
-                      type: anitya
-                      project-id: 232764
-                      stable-only: true
-                      url-template: https://github.com/libjxl/libjxl/archive/refs/tags/v$version.tar.gz
           - name: libass
             config-opts:
               - --disable-static
