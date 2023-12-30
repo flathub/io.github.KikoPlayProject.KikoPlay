@@ -1,0 +1,40 @@
+From 425924d1f5fed2b4fee698b7f286c676e7020be0 Mon Sep 17 00:00:00 2001
+From: madoka773 <valigarmanda55@gmail.com>
+Date: Sun, 7 Jan 2024 13:18:26 +0800
+Subject: [PATCH] flatpak
+
+---
+ Extension/Lua/{lua.pro => Lua.pro} |  0
+ KikoPlay.pro                       | 10 +++++-----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+ rename Extension/Lua/{lua.pro => Lua.pro} (100%)
+
+diff --git a/Extension/Lua/lua.pro b/Extension/Lua/Lua.pro
+similarity index 100%
+rename from Extension/Lua/lua.pro
+rename to Extension/Lua/Lua.pro
+diff --git a/KikoPlay.pro b/KikoPlay.pro
+index 20d688a..e89e20c 100644
+--- a/KikoPlay.pro
++++ b/KikoPlay.pro
+@@ -501,12 +501,12 @@ linux-g++* {
+ 
+ unix {
+     # Install settings
+-    target.path += /usr/bin
+-    unix:icons.path = /usr/share/pixmaps
+-    unix:desktop.path = /usr/share/applications
+-    unix:icons.files = kikoplay.png kikoplay.xpm
++    target.path += /app/bin
++    unix:icons.path = /app/share/icons/hicolor/128x128/apps/
++    unix:desktop.path = /app/share/applications
++    unix:icons.files = flatpak/1.0.0/io.github.KikoPlayProject.KikoPlay.png
+     unix:desktop.files = kikoplay.desktop
+-    unix:web.path = /usr/share/kikoplay/web
++    unix:web.path = /app/share/kikoplay/web
+     unix:web.files = web/*
+ 
+     INSTALLS += target icons desktop web
+-- 
+2.43.0
+
