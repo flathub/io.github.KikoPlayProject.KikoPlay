@@ -1,12 +1,12 @@
-From 425924d1f5fed2b4fee698b7f286c676e7020be0 Mon Sep 17 00:00:00 2001
+From 08a86dcfbd6a6649e3175ef93d7d0675c8a5208c Mon Sep 17 00:00:00 2001
 From: madoka773 <valigarmanda55@gmail.com>
-Date: Sun, 7 Jan 2024 13:18:26 +0800
+Date: Sun, 7 Jan 2024 17:25:03 +0800
 Subject: [PATCH] flatpak
 
 ---
  Extension/Lua/{lua.pro => Lua.pro} |  0
- KikoPlay.pro                       | 10 +++++-----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ KikoPlay.pro                       | 10 ++++------
+ 2 files changed, 4 insertions(+), 6 deletions(-)
  rename Extension/Lua/{lua.pro => Lua.pro} (100%)
 
 diff --git a/Extension/Lua/lua.pro b/Extension/Lua/Lua.pro
@@ -14,10 +14,10 @@ similarity index 100%
 rename from Extension/Lua/lua.pro
 rename to Extension/Lua/Lua.pro
 diff --git a/KikoPlay.pro b/KikoPlay.pro
-index 20d688a..e89e20c 100644
+index 20d688a..9919f2e 100644
 --- a/KikoPlay.pro
 +++ b/KikoPlay.pro
-@@ -501,12 +501,12 @@ linux-g++* {
+@@ -501,15 +501,13 @@ linux-g++* {
  
  unix {
      # Install settings
