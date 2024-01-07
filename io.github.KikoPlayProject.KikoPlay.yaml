@@ -73,6 +73,19 @@ modules:
         x-checker-data:
           type: git
           tag-pattern: ^v([\d.]+)$
+          
+  - name: libass
+    config-opts:
+      - --disable-static
+    sources:
+      - type: archive
+        url: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.gz
+        sha256: d653be97198a0543c69111122173c41a99e0b91426f9e17f06a858982c2fb03d
+        x-checker-data:
+          type: anitya
+          project-id: 1560
+          stable-only: true
+          url-template: https://github.com/libass/libass/releases/download/$version/libass-$version.tar.gz
 
   - name: x264
     config-opts:
@@ -152,19 +165,6 @@ modules:
           project-id: 17166
           stable-only: true
           url-template: https://xorg.freedesktop.org/archive/individual/lib/libXpresent-$version.tar.xz
-
-  - name: libass
-    config-opts:
-      - --disable-static
-    sources:
-      - type: archive
-        url: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.gz
-        sha256: d653be97198a0543c69111122173c41a99e0b91426f9e17f06a858982c2fb03d
-        x-checker-data:
-          type: anitya
-          project-id: 1560
-          stable-only: true
-          url-template: https://github.com/libass/libass/releases/download/$version/libass-$version.tar.gz
 
   - name: uchardet
     buildsystem: cmake-ninja
