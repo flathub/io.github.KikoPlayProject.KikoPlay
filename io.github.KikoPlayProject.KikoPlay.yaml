@@ -28,11 +28,18 @@ modules:
     buildsystem: qmake
     config-opts:
       - LIBS+=-L/app/lib
+<<<<<<< HEAD
+=======
+    post-install:
+      - install -Dm644 io.github.KikoPlayProject.KikoPlay.metainfo.xml -t /app/share/metainfo/
+      - install -Dm644 io.github.KikoPlayProject.KikoPlay.png -t /app/share/icons/hicolor/128x128/apps
+>>>>>>> 20f9347 (fix icon)
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlay.git
         commit: 025b5fef979a29a875c09fddc3263f13b11c1940
       - type: patch
+<<<<<<< HEAD
         path: patch/0001-prebuild.patch
       - type: patch
         path: patch/0002-install.patch
@@ -335,3 +342,10 @@ modules:
           - type: git
             url: https://github.com/KikoPlayProject/KikoPlayApp.git
             commit: 2065f7a127fa28f8e3d5df4ff75335d14490045c
+=======
+        path: 0001-flatpak.patch
+      - type: file
+        path: io.github.KikoPlayProject.KikoPlay.metainfo.xml
+      - type: file
+        path: io.github.KikoPlayProject.KikoPlay.png
+>>>>>>> 20f9347 (fix icon)
