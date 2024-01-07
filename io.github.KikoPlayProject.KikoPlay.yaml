@@ -313,6 +313,7 @@ modules:
       - LIBS+=-L/app/lib
     post-install:
       - install -Dm644 io.github.KikoPlayProject.KikoPlay.metainfo.xml -t /app/share/metainfo/
+      - install -Dm644 flatpak/1.0.0/io.github.KikoPlayProject.KikoPlay.png -t /app/share/metainfo/
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlay.git
