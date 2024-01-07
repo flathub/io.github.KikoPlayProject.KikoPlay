@@ -276,8 +276,8 @@ modules:
     build-options:
       no-debuginfo: true
     build-commands:
-      - mkdir -p /app/share/kikoplay/extension/script/
-      - mv * /app/share/kikoplay/extension/script/
+      - mkdir -p /app/bin/extension/script
+      - mv * /app/bin/extension/script/
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlayScript.git
@@ -294,7 +294,7 @@ modules:
     build-options:
       no-debuginfo: true
     build-commands:
-      - mv app /app/share/kikoplay/extension/
+      - mv app /app/extension/
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlayApp.git
