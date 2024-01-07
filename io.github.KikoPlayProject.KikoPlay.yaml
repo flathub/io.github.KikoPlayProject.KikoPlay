@@ -3,17 +3,20 @@ runtime: org.kde.Platform
 runtime-version: 5.15-23.08
 sdk: org.kde.Sdk
 command: KikoPlay
+rename-desktop-file: kikoplay.desktop
 finish-args:
   - --device=dri
   - --share=ipc
   - --share=network
   - --filesystem=xdg-videos
   - --filesystem=xdg-download
-  - --socket=x11
+  - --socket=fallback-x11
+  - --socket=wayland
   - --socket=pulseaudio
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
   - --persist=.config/kikoplay
+  - --env=LC_NUMERIC=C
 cleanup:
   - '*.a'
   - '*.la'
@@ -24,21 +27,312 @@ cleanup:
   - /share/man
   - /share/gtk-doc
 modules:
-  - name: KikoPlay
+  - name: nv-codec-headers
+    cleanup:
+      - '*'
+    no-autogen: true
+    make-install-args:
+      - PREFIX=/app
+    sources:
+      - type: archive
+        url: https://github.com/FFmpeg/nv-codec-headers/archive/refs/tags/n12.1.14.0.tar.gz
+        sha256: 2fefaa227d2a3b4170797796425a59d1dd2ed5fd231db9b4244468ba327acd0b
+        x-checker-data:
+          type: anitya
+          project-id: 223796
+          stable-only: true
+          url-template: https://github.com/FFmpeg/nv-codec-headers/archive/refs/tags/n$version.tar.gz
+
+  - name: highway
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+      - -DBUILD_TESTING=OFF
+      - -DBUILD_SHARED_LIBS=ON
+    sources:
+      - type: archive
+        url: https://github.com/google/highway/archive/refs/tags/1.0.7.tar.gz
+        sha256: 5434488108186c170a5e2fca5e3c9b6ef59a1caa4d520b008a9b8be6b8abe6c5
+        x-checker-data:
+          type: anitya
+          project-id: 205809
+          stable-only: true
+          url-template: https://github.com/google/highway/archive/refs/tags/$version.tar.gz
+
+  - name: libjxl
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DBUILD_TESTING=OFF
+    sources:
+      - type: git
+        url: https://github.com/libjxl/libjxl.git
+        tag: v0.9.0
+        commit: c51cffd7587d27fdd73f0be856db3b730314f03c
+        disable-shallow-clone: true
+        x-checker-data:
+          type: git
+          tag-pattern: ^v([\d.]+)$
+          
+  - name: libass
+    config-opts:
+      - --disable-static
+    sources:
+      - type: archive
+        url: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.gz
+        sha256: d653be97198a0543c69111122173c41a99e0b91426f9e17f06a858982c2fb03d
+        x-checker-data:
+          type: anitya
+          project-id: 1560
+          stable-only: true
+          url-template: https://github.com/libass/libass/releases/download/$version/libass-$version.tar.gz
+
+  - name: x264
+    config-opts:
+      - --disable-cli
+      - --enable-shared
+    sources:
+      - type: git
+        url: https://code.videolan.org/videolan/x264.git
+        commit: c1c9931dc87289b8aeba78150467f17bdb97d019
+        x-checker-data:
+          type: json
+          url: https://code.videolan.org/api/v4/projects/536/repository/commits
+          commit-query: first( .[].id )
+          version-query: first( .[].id )
+          timestamp-query: first( .[].committed_date )
+          
+  - name: x265
+    buildsystem: cmake-ninja
+    subdir: source
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DBUILD_STATIC=0
+    sources:
+      - type: git
+        url: https://bitbucket.org/multicoreware/x265_git.git
+        tag: '3.5'
+        commit: f0c1022b6be121a753ff02853fbe33da71988656
+        x-checker-data:
+          type: git
+          tag-pattern: ^([\d.]+)$
+
+  - name: ffmpeg
+    cleanup:
+      - /share/ffmpeg/examples
+    config-opts:
+      - --disable-debug
+      - --disable-doc
+      - --disable-static
+      - --enable-shared
+      - --enable-gnutls
+      - --enable-gpl
+      - --enable-version3
+      - --enable-encoder=png
+      - --enable-libass
+      - --enable-libv4l2
+      - --enable-libdav1d
+      - --enable-libfontconfig
+      - --enable-libfreetype
+      - --enable-libopus
+      - --enable-librsvg
+      - --enable-libvpx
+      - --enable-libmp3lame
+      - --enable-libjxl
+      - --enable-libwebp
+      - --enable-libaom
+      - --enable-libx264
+      - --enable-libx265
+    sources:
+      - type: archive
+        url: https://ffmpeg.org/releases/ffmpeg-6.1.1.tar.gz
+        sha256: b0aee531e4a91fed6bc031445dfc3ad8eb36de1fcb0fa2acdb589ecc9f8dc9cb
+        x-checker-data:
+          type: anitya
+          project-id: 5405
+          stable-only: true
+          url-template: https://ffmpeg.org/releases/ffmpeg-$version.tar.gz
+
+  - name: libXpresent
+    buildsystem: autotools
+    sources:
+      - type: archive
+        url: https://xorg.freedesktop.org/archive/individual/lib/libXpresent-1.0.1.tar.xz
+        sha256: b964df9e5a066daa5e08d2dc82692c57ca27d00b8cc257e8e960c9f1cf26231b
+        x-checker-data:
+          type: anitya
+          project-id: 17166
+          stable-only: true
+          url-template: https://xorg.freedesktop.org/archive/individual/lib/libXpresent-$version.tar.xz
+
+  - name: uchardet
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DBUILD_STATIC=0
+    cleanup:
+      - /bin
+    sources:
+      - type: archive
+        url: https://www.freedesktop.org/software/uchardet/releases/uchardet-0.0.8.tar.xz
+        sha256: e97a60cfc00a1c147a674b097bb1422abd9fa78a2d9ce3f3fdcc2e78a34ac5f0
+        x-checker-data:
+          type: anitya
+          project-id: 9265
+          stable-only: true
+          url-template: https://www.freedesktop.org/software/uchardet/releases/uchardet-$version.tar.xz
+          
+  - name: libplacebo
+    buildsystem: meson
+    config-opts:
+      - -Dglslang=disabled
+      - -Dd3d11=disabled
+      - -Ddemos=false
+    sources:
+      - type: git
+        url: https://github.com/haasn/libplacebo.git
+        commit: 2805a0d01c029084ab36bf5d0e3c8742012a0b27
+        tag: v6.338.1
+        x-checker-data:
+          type: git
+          tag-pattern: ^v([\d.]+)$
+
+  - name: yt-dlp
+    no-autogen: true
+    no-make-install: true
+    make-args:
+      - yt-dlp
+      - PYTHON=/usr/bin/python3
+    post-install:
+      - install yt-dlp /app/bin
+    sources:
+      - type: archive
+        url: https://github.com/yt-dlp/yt-dlp/archive/refs/tags/2023.12.30.tar.gz
+        sha256: 2878501990f3ab6aa8eabb7346c16d4b4cbc01984372a1f0b3a6be8d260c7aff
+        x-checker-data:
+          type: anitya
+          project-id: 143399
+          stable-only: true
+          url-template: https://github.com/yt-dlp/yt-dlp/archive/refs/tags/$version.tar.gz
+
+  - name: libmpv
+    cleanup:
+      - /share/metainfo
+      - /share/bash-completion
+      - /share/zsh
+      - /share/doc
+      - /share/icons
+      - /share/applications
+    buildsystem: meson
+    config-opts:
+      - -Dlibmpv=true
+      - -Dlua=disabled
+      - -Ddebug=false
+      - -Dbuild-date=false
+      - -Dcplayer=false
+      - -Dmanpage-build=disabled
+    sources:
+      - type: archive
+        url: https://github.com/mpv-player/mpv/archive/refs/tags/v0.37.0.tar.gz
+        sha256: 1d2d4adbaf048a2fa6ee134575032c4b2dad9a7efafd5b3e69b88db935afaddf
+        x-checker-data:
+          type: anitya
+          project-id: 5348
+          stable-only: true
+          url-template: https://github.com/mpv-player/mpv/archive/refs/tags/v$version.tar.gz
+
+  - name: aria2
+    config-opts:
+      - --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt
+      - --disable-libaria2
+    no-make-install: true
+    post-install:
+      - install -Dm755 src/aria2c /app/bin
+    sources:
+      - type: archive
+        url: https://github.com/aria2/aria2/releases/download/release-1.37.0/aria2-1.37.0.tar.xz
+        sha256: 60a420ad7085eb616cb6e2bdf0a7206d68ff3d37fb5a956dc44242eb2f79b66b
+        x-checker-data:
+          type: anitya
+          project-id: 109
+          url-template: https://github.com/aria2/aria2/releases/download/release-$version/aria2-$version.tar.xz
+          stable-only: true
+
+  - name: lua5.3
+    no-autogen: true
+    make-args:
+      - MYCFLAGS=-fPIC
+      - linux
+    make-install-args:
+      - INSTALL_TOP=/app
+    post-install:
+      - mv /app/lib/liblua.a /app/lib/liblua53.a
+    sources:
+      - type: archive
+        url: https://www.lua.org/ftp/lua-5.3.6.tar.gz
+        sha256: fc5fd69bb8736323f026672b1b7235da613d7177e72558893a0bdcd320466d60
+
+  - name: kikoplay-script
+    buildsystem: simple
+    build-options:
+      no-debuginfo: true
+    build-commands:
+      - mkdir -p /app/share/kikoplay/extension/script/
+      - mv * /app/share/kikoplay/extension/script/
+    sources:
+      - type: git
+        url: https://github.com/KikoPlayProject/KikoPlayScript.git
+        commit: 4c552ec13e86a055e5d1d2ea4bfb7ed2b0e54a8f
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/KikoPlayProject/KikoPlayScript/commits
+          commit-query: first( .[].sha )
+          version-query: first( .[].sha )
+          timestamp-query: first( .[].commit.author.date )
+
+  - name: kikoplay-app
+    buildsystem: simple
+    build-options:
+      no-debuginfo: true
+    build-commands:
+      - mv app /app/share/kikoplay/extension/
+    sources:
+      - type: git
+        url: https://github.com/KikoPlayProject/KikoPlayApp.git
+        commit: 233dd28e8ee284cc6f0672a1310916bea5c05ebc
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/KikoPlayProject/KikoPlayApp/commits
+          commit-query: first( .[].sha )
+          version-query: first( .[].sha )
+          timestamp-query: first( .[].commit.author.date )
+
+  - name: kikoplay
     buildsystem: qmake
     config-opts:
       - LIBS+=-L/app/lib
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
     post-install:
       - install -Dm644 io.github.KikoPlayProject.KikoPlay.metainfo.xml -t /app/share/metainfo/
       - install -Dm644 io.github.KikoPlayProject.KikoPlay.png -t /app/share/icons/hicolor/128x128/apps
 >>>>>>> 20f9347 (fix icon)
+=======
+    post-install:
+      - install -Dm644 io.github.KikoPlayProject.KikoPlay.metainfo.xml -t /app/share/metainfo/
+      - install -Dm644 flatpak/1.0.0/io.github.KikoPlayProject.KikoPlay.png -t /app/share/metainfo/
+>>>>>>> df33f22 (1.0.1)
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlay.git
-        commit: 025b5fef979a29a875c09fddc3263f13b11c1940
+        tag: '1.0.1'
+        commit: d0fb24d04e9e165396551c65e6d9b993ce0ad923
+        x-checker-data:
+          type: git
+          tag-pattern: ^([\d.]+)$
       - type: patch
+<<<<<<< HEAD
 <<<<<<< HEAD
         path: patch/0001-prebuild.patch
       - type: patch
@@ -349,3 +643,8 @@ modules:
       - type: file
         path: io.github.KikoPlayProject.KikoPlay.png
 >>>>>>> 20f9347 (fix icon)
+=======
+        path: 0001-flatpak.patch
+      - type: file
+        path: io.github.KikoPlayProject.KikoPlay.metainfo.xml
+>>>>>>> df33f22 (1.0.1)
