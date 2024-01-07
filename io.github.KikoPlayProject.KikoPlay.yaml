@@ -141,7 +141,6 @@ modules:
       - --enable-libjxl
       - --enable-libwebp
       - --enable-libaom
-      - --enable-libsvtav1
       - --enable-libx264
       - --enable-libx265
     sources:
