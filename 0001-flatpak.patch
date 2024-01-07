@@ -1,19 +1,25 @@
-From 05cece0174700a05e80425b81e27684f21ef2ad5 Mon Sep 17 00:00:00 2001
-From: neovali <valigarmanda55@gmail.com>
-Date: Sat, 11 Nov 2023 08:16:03 +0800
-Subject: [PATCH] install
+From 9773d38b8b1bb838168d9fd2073f600cf0c3f1cb Mon Sep 17 00:00:00 2001
+From: madoka773 <valigarmanda55@gmail.com>
+Date: Sun, 7 Jan 2024 18:16:34 +0800
+Subject: [PATCH] flatpak
 
 ---
+ Extension/Lua/{lua.pro => Lua.pro}                   |  0
  KikoPlay.pro                                         | 12 +++++-------
  ...top => io.github.KikoPlayProject.KikoPlay.desktop |  2 +-
- 2 files changed, 6 insertions(+), 8 deletions(-)
+ 3 files changed, 6 insertions(+), 8 deletions(-)
+ rename Extension/Lua/{lua.pro => Lua.pro} (100%)
  rename kikoplay.desktop => io.github.KikoPlayProject.KikoPlay.desktop (84%)
 
+diff --git a/Extension/Lua/lua.pro b/Extension/Lua/Lua.pro
+similarity index 100%
+rename from Extension/Lua/lua.pro
+rename to Extension/Lua/Lua.pro
 diff --git a/KikoPlay.pro b/KikoPlay.pro
-index 9d97573..5a15449 100644
+index 20d688a..5cdf68a 100644
 --- a/KikoPlay.pro
 +++ b/KikoPlay.pro
-@@ -496,15 +496,13 @@ linux-g++* {
+@@ -501,15 +501,13 @@ linux-g++* {
  
  unix {
      # Install settings
@@ -51,5 +57,5 @@ index cff68d8..3490df2 100644
  StartupNotify=true
  Categories=Qt;AudioVideo;Video;
 -- 
-2.34.1
+2.43.0
 
