@@ -32,7 +32,7 @@ index 20d688a..5cdf68a 100644
 +    target.path += /app/bin
 +    unix:desktop.path = /app/share/applications
 +    unix:desktop.files = io.github.KikoPlayProject.KikoPlay.desktop
-+    unix:web.path = /app/share/kikoplay/web
++    unix:web.path = /app/bin/web
      unix:web.files = web/*
  
 -    INSTALLS += target icons desktop web
