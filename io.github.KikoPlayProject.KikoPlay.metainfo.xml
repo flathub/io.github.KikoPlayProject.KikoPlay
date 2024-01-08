@@ -30,15 +30,15 @@
   <screenshots>
     <screenshot type="default">
       <caption>Player</caption>
-      <image type="source">https://raw.githubusercontent.com/KikoPlayProject/KikoPlay/1.0.0/screenshot/KikoPlay1.jpg</image>
+      <image type="source">https://kikoplay.fun/static/projects/player.jpg</image>
     </screenshot>
     <screenshot type="default">
-      <caption>Database</caption>
-      <image type="source">https://raw.githubusercontent.com/KikoPlayProject/KikoPlay/1.0.0/screenshot/KikoPlay2.jpg</image>
+      <caption>Library</caption>
+      <image type="source">https://kikoplay.fun/static/projects/library.jpg</image>
     </screenshot>
     <screenshot type="default">
-      <caption>Detail</caption>
-      <image type="source">https://raw.githubusercontent.com/KikoPlayProject/KikoPlay/1.0.0/screenshot/KikoPlay3.jpg</image>
+      <caption>Anime</caption>
+      <image type="source">https://kikoplay.fun/static/projects/anime.jpg</image>
     </screenshot>
   </screenshots>
   <releases>
