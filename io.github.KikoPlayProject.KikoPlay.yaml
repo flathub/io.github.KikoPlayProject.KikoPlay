@@ -184,7 +184,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlayScript.git
-        commit: 4c552ec13e86a055e5d1d2ea4bfb7ed2b0e54a8f
+        commit: 69de9042fb8cff3a3047c38d97596f14f2dce910
         x-checker-data:
           type: json
           url: https://api.github.com/repos/KikoPlayProject/KikoPlayScript/commits
