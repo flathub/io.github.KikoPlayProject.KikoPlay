@@ -221,8 +221,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlay.git
-        tag: 1.0.1
-        commit: d0fb24d04e9e165396551c65e6d9b993ce0ad923
+        tag: 1.0.2
+        commit: 5a26d8c2807118e6bb405202d091de0916043b81
         x-checker-data:
           type: git
           tag-pattern: ^([\d.]+)$
