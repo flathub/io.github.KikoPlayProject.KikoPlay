@@ -135,8 +135,8 @@ modules:
       - install yt-dlp /app/bin
     sources:
       - type: archive
-        url: https://github.com/yt-dlp/yt-dlp/archive/refs/tags/2024.04.09.tar.gz
-        sha256: fa2a21946b886f914ccc5ee18a9dc41b628745a51e04d136c6baec06ed4bded6
+        url: https://github.com/yt-dlp/yt-dlp/archive/refs/tags/2024.05.26.tar.gz
+        sha256: 8daf63bd8c63970d8f49d67a539da2e6f3628c3006e8daf53276b96790384b40
         x-checker-data:
           type: anitya
           project-id: 143399
@@ -184,7 +184,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlayScript.git
-        commit: 8d05546bb42987d44af2ff4e86de382fdf01170c
+        commit: 929c6e2fd105e86a54e1a89fc31294d60296a6a5
         x-checker-data:
           type: json
           url: https://api.github.com/repos/KikoPlayProject/KikoPlayScript/commits
