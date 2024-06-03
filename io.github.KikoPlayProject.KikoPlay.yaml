@@ -201,7 +201,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlayApp.git
-        commit: bb8853217f499647fdd12879458befadf362a618
+        commit: 504e402573c47abf1a10fff60b54e9c7273e48b3
         x-checker-data:
           type: json
           url: https://api.github.com/repos/KikoPlayProject/KikoPlayApp/commits
