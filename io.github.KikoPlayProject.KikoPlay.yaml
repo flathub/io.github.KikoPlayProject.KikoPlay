@@ -47,11 +47,11 @@ modules:
       - type: archive
         url: https://github.com/mpv-player/mpv/archive/refs/tags/v0.37.0.tar.gz
         sha256: 1d2d4adbaf048a2fa6ee134575032c4b2dad9a7efafd5b3e69b88db935afaddf
-#        x-checker-data:
-#          type: anitya
-#          project-id: 5348
-#          stable-only: true
-#          url-template: https://github.com/mpv-player/mpv/archive/refs/tags/v$version.tar.gz
+        x-checker-data:
+          type: anitya
+          project-id: 5348
+          stable-only: true
+          url-template: https://github.com/mpv-player/mpv/archive/refs/tags/v$version.tar.gz
     modules:
 
       - name: libXpresent
