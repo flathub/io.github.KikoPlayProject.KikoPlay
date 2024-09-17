@@ -44,7 +44,6 @@ modules:
       - -Dcplayer=false
       - -Dmanpage-build=disabled
       - -Dvulkan=enabled
-      - -Dvulkan-interop=enabled
     sources:
       - type: git
         url: https://github.com/mpv-player/mpv.git
@@ -132,10 +131,8 @@ modules:
         buildsystem: meson
         config-opts:
           - -Dvulkan=enabled
-          - -Dshaderc=enabled
-        cleanup:
-          - /include
-          - /lib/pkgconfig
+          - -Dd3d11=disabled
+          - -Ddemos=false
         sources:
           - type: git
             url: https://code.videolan.org/videolan/libplacebo.git
@@ -145,52 +142,41 @@ modules:
               type: git
               tag-pattern: ^v([\d.]+)$
         modules:
-          - name: shaderc
+          - name: glslang
             buildsystem: cmake-ninja
-            builddir: true
             config-opts:
-              - -DSHADERC_SKIP_COPYRIGHT_CHECK=ON
-              - -DSHADERC_SKIP_EXAMPLES=ON
-              - -DSHADERC_SKIP_TESTS=ON
-              - -DSPIRV_SKIP_EXECUTABLES=ON
-              - -DENABLE_GLSLANG_BINARIES=OFF
+              - -DBUILD_SHARED_LIBS=ON
             cleanup:
               - /bin
               - /include
               - /lib/cmake
-              - /lib/pkgconfig
             sources:
-              - type: git
-                url: https://github.com/google/shaderc.git
-                #tag: v2023.7
-                commit: 40bced4e1e205ecf44630d2dfa357655b6dabd04
-                #x-checker-data:
-                #  type: git
-                #  tag-pattern: ^v(\d{4}\.\d{1,2})$
-              - type: git
-                url: https://github.com/KhronosGroup/SPIRV-Tools.git
-                tag: v2024.1
-                commit: 04896c462d9f3f504c99a4698605b6524af813c1
-                dest: third_party/spirv-tools
-                #x-checker-data:
-                #  type: git
-                #  tag-pattern: ^v(\d{4}\.\d{1})$
-              - type: git
-                url: https://github.com/KhronosGroup/SPIRV-Headers.git
-                #tag: sdk-1.3.250.1
-                commit: 4f7b471f1a66b6d06462cd4ba57628cc0cd087d7
-                dest: third_party/spirv-headers
-                #x-checker-data:
-                #  type: git
-                #  tag-pattern: ^sdk-([\d.]+)$
-              - type: git
-                url: https://github.com/KhronosGroup/glslang.git
-                tag: 14.3.0
-                commit: fa9c3deb49e035a8abcabe366f26aac010f6cbfb
-                dest: third_party/glslang
+              - type: archive
+                url: https://github.com/KhronosGroup/glslang/archive/14.3.0.tar.gz
+                sha256: be6339048e20280938d9cb399fcdd06e04f8654d43e170e8cce5a56c9a754284
                 x-checker-data:
-                  type: git
-                  tag-pattern: ^(\d{1,2}\.\d{1,2}\.\d{1,4})$
+                  type: anitya
+                  project-id: 205796
+                  stable-only: true
+                  url-template: https://github.com/KhronosGroup/glslang/archive/$version.tar.gz
+              - type: archive
+                url: https://github.com/KhronosGroup/SPIRV-Tools/archive/refs/tags/sdk-1.3.261.1.tar.gz
+                sha256: ead95c626ad482882a141d1aa0ce47b9453871f72c42c0b28d39c82f60a52008
+                dest: External/spirv-tools
+                x-checker-data:
+                  type: anitya
+                  stable-only: true
+                  project-id: 334920
+                  url-template: https://github.com/KhronosGroup/SPIRV-Tools/archive/refs/tags/sdk-$version.tar.gz
+              - type: archive
+                url: https://github.com/KhronosGroup/SPIRV-Headers/archive/refs/tags/sdk-1.3.261.1.tar.gz
+                sha256: 32b4c6ae6a2fa9b56c2c17233c8056da47e331f76e117729925825ea3e77a739
+                dest: External/spirv-tools/external/spirv-headers
+                x-checker-data:
+                  type: anitya
+                  stable-only: true
+                  project-id: 334920
+                  url-template: https://github.com/KhronosGroup/SPIRV-Headers/archive/refs/tags/sdk-$version.tar.gz
 
   - name: yt-dlp
     no-autogen: true
@@ -297,8 +283,12 @@ modules:
                 - -DTARGET=ARMV8
         sources:
           - type: archive
-            url: https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.26/OpenBLAS-0.3.26.tar.gz
-            sha256: 4e6e4f5cb14c209262e33e6816d70221a2fe49eb69eaf0a06f065598ac602c68
+            url: https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.28/OpenBLAS-0.3.28.tar.gz
+            sha256: f1003466ad074e9b0c8d421a204121100b0751c96fc6fcf3d1456bd12f8a00a1
+            x-checker-data:
+              type: anitya
+              project-id: 2540
+              url-template: https://github.com/OpenMathLib/OpenBLAS/releases/download/v$version/OpenBLAS-$version.tar.gz
 
       - name: whispercpp-openblas
         buildsystem: cmake-ninja
@@ -313,9 +303,13 @@ modules:
           - -DCMAKE_C_FLAGS='-O3 -I$$C_INCLUDE_PATH/openblas'
           - -DCMAKE_CXX_FLAGS='-O3 -I$$CPLUS_INCLUDE_PATH/openblas'
         sources:
-          - type: archive
-            url: https://github.com/ggerganov/whisper.cpp/archive/refs/tags/v1.6.2.tar.gz
-            sha256: da7988072022acc3cfa61b370b3c51baad017f1900c3dc4e68cb276499f66894
+          - type: git
+            url: https://github.com/ggerganov/whisper.cpp.git
+            tag: v1.6.2
+            commit: c7b6988678779901d02ceba1a8212d2c9908956e
+            x-checker-data:
+              type: git
+              tag-pattern: ^v([\d.]+)$
           - type: patch
             path: patches/whispercpp.patch
 
