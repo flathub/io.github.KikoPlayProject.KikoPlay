@@ -43,28 +43,50 @@ modules:
       - -Dbuild-date=false
       - -Dcplayer=false
       - -Dmanpage-build=disabled
+      - -Dsdl2=enabled
+      # - -Dshaderc=enabled
+      - -Dvulkan=enabled
+      # - -Dvulkan-interop=enabled
     sources:
-      - type: archive
-        url: https://github.com/mpv-player/mpv/archive/refs/tags/v0.37.0.tar.gz
-        sha256: 1d2d4adbaf048a2fa6ee134575032c4b2dad9a7efafd5b3e69b88db935afaddf
-        #x-checker-data:
-          #type: anitya
-          #project-id: 5348
-          #stable-only: true
-          #url-template: https://github.com/mpv-player/mpv/archive/refs/tags/v$version.tar.gz
-    modules:
+      - type: git
+        url: https://github.com/mpv-player/mpv.git
+        tag: v0.38.0
+        commit: 02254b92dd237f03aa0a151c2a68778c4ea848f9
+        x-checker-data:
+          type: git
+          tag-pattern: ^v([\d.]+)$
 
+    modules:
       - name: libXpresent
         buildsystem: autotools
         sources:
-          - type: archive
-            url: https://xorg.freedesktop.org/archive/individual/lib/libXpresent-1.0.1.tar.xz
-            sha256: b964df9e5a066daa5e08d2dc82692c57ca27d00b8cc257e8e960c9f1cf26231b
+          - type: git
+            url: https://gitlab.freedesktop.org/xorg/lib/libxpresent.git
+            tag: libXpresent-1.0.1
+            commit: 37507b5f44332accfb1064ee69a4f6a833994747
             x-checker-data:
-              type: anitya
-              project-id: 17166
-              stable-only: true
-              url-template: https://xorg.freedesktop.org/archive/individual/lib/libXpresent-$version.tar.xz
+              type: git
+              tag-pattern: ^libXpresent-([\d.]+)$
+
+      - name: libv4l2
+        buildsystem: meson
+        cleanup:
+          - /include
+          - /lib/pkgconfig
+          - /share/man
+        config-opts:
+          - -Ddoxygen-html=false
+          - -Ddoxygen-doc=disabled
+          - -Dbpf=disabled
+          - -Dudevdir=/app/lib/udev
+        sources:
+          - type: git
+            url: https://git.linuxtv.org/v4l-utils.git
+            tag: v4l-utils-1.28.1
+            commit: fc15e229d9d337e46d730f00647821adbbd58548
+            x-checker-data:
+              type: git
+              tag-pattern: ^v4l-utils-([\d.]+)$
 
       - name: nv-codec-headers
         cleanup:
@@ -73,27 +95,25 @@ modules:
         make-install-args:
           - PREFIX=/app
         sources:
-          - type: archive
-            url: https://github.com/FFmpeg/nv-codec-headers/archive/refs/tags/n12.2.72.0.tar.gz
-            sha256: dbeaec433d93b850714760282f1d0992b1254fc3b5a6cb7d76fc1340a1e47563
+          - type: git
+            url: https://github.com/FFmpeg/nv-codec-headers.git
+            tag: n12.2.72.0
+            commit: c69278340ab1d5559c7d7bf0edf615dc33ddbba7
             x-checker-data:
-              type: anitya
-              project-id: 223796
-              stable-only: true
-              url-template: https://github.com/FFmpeg/nv-codec-headers/archive/refs/tags/n$version.tar.gz
+              type: git
+              tag-pattern: ^n([\d.]+)$
 
       - name: libass
         config-opts:
           - --disable-static
         sources:
-          - type: archive
-            url: https://github.com/libass/libass/releases/download/0.17.3/libass-0.17.3.tar.gz
-            sha256: da7c348deb6fa6c24507afab2dee7545ba5dd5bbf90a137bfe9e738f7df68537
+          - type: git
+            url: https://github.com/libass/libass.git
+            tag: 0.17.3
+            commit: e46aedea0a0d17da4c4ef49d84b94a7994664ab5
             x-checker-data:
-              type: anitya
-              project-id: 1560
-              stable-only: true
-              url-template: https://github.com/libass/libass/releases/download/$version/libass-$version.tar.gz
+              type: git
+              tag-pattern: ^(\d\.\d{1,3}\.\d{1,2})$
 
       - name: uchardet
         buildsystem: cmake-ninja
@@ -113,17 +133,67 @@ modules:
       - name: libplacebo
         buildsystem: meson
         config-opts:
-          - -Dglslang=disabled
+          - -Dshaderc=enabled
+          - -Dvulkan=enabled
           - -Dd3d11=disabled
           - -Ddemos=false
         sources:
           - type: git
-            url: https://github.com/haasn/libplacebo.git
-            commit: 1fd3c7bde7b943fe8985c893310b5269a09b46c5
+            url: https://code.videolan.org/videolan/libplacebo.git
             tag: v7.349.0
+            commit: 1fd3c7bde7b943fe8985c893310b5269a09b46c5
             x-checker-data:
               type: git
               tag-pattern: ^v([\d.]+)$
+        modules:
+          - name: shaderc
+            buildsystem: cmake-ninja
+            builddir: true
+            config-opts:
+              - -DSHADERC_SKIP_COPYRIGHT_CHECK=ON
+              - -DSHADERC_SKIP_EXAMPLES=ON
+              - -DSHADERC_SKIP_TESTS=ON
+              - -DSPIRV_SKIP_EXECUTABLES=ON
+              - -DENABLE_GLSLANG_BINARIES=OFF
+            cleanup:
+              - /bin
+              - /include
+              - /lib/cmake
+              - /lib/pkgconfig
+            sources:
+              - type: git
+                url: https://github.com/google/shaderc.git
+                tag: v2024.2
+                commit: 3ac03b8ad85a8e328a6182cddee8d05810bd5a2c
+                x-checker-data:
+                 type: git
+                 tag-pattern: ^v(\d{4}\.\d{1,2})$
+              - type: archive
+                url: https://github.com/KhronosGroup/SPIRV-Tools/archive/refs/tags/sdk-1.3.261.1.tar.gz
+                sha256: ead95c626ad482882a141d1aa0ce47b9453871f72c42c0b28d39c82f60a52008
+                dest: third_party/spirv-tools
+                x-checker-data:
+                  type: anitya
+                  stable-only: true
+                  project-id: 334920
+                  url-template: https://github.com/KhronosGroup/SPIRV-Tools/archive/refs/tags/sdk-$version.tar.gz
+              - type: archive
+                url: https://github.com/KhronosGroup/SPIRV-Headers/archive/refs/tags/sdk-1.3.261.1.tar.gz
+                sha256: 32b4c6ae6a2fa9b56c2c17233c8056da47e331f76e117729925825ea3e77a739
+                dest: third_party/spirv-headers
+                x-checker-data:
+                  type: anitya
+                  stable-only: true
+                  project-id: 334920
+                  url-template: https://github.com/KhronosGroup/SPIRV-Headers/archive/refs/tags/sdk-$version.tar.gz
+              - type: git
+                url: https://github.com/KhronosGroup/glslang.git
+                tag: 14.3.0
+                commit: fa9c3deb49e035a8abcabe366f26aac010f6cbfb
+                dest: third_party/glslang
+                x-checker-data:
+                  type: git
+                  tag-pattern: ^(\d{1,2}\.\d{1,2}\.\d{1,4})$
 
   - name: yt-dlp
     no-autogen: true
@@ -174,6 +244,30 @@ modules:
         url: https://www.lua.org/ftp/lua-5.3.6.tar.gz
         sha256: fc5fd69bb8736323f026672b1b7235da613d7177e72558893a0bdcd320466d60
 
+  - name: kikoplay
+    buildsystem: qmake
+    config-opts:
+      - LIBS+=-L/app/lib
+    post-install:
+      - install -Dm644 io.github.KikoPlayProject.KikoPlay.metainfo.xml -t /app/share/metainfo/
+      - install -Dm644 io.github.KikoPlayProject.KikoPlay.png -t /app/share/icons/hicolor/128x128/apps
+      - ln -svf /usr/bin/ffmpeg /app/bin/
+      - mkdir -p /app/lib/ffmpeg
+    sources:
+      - type: git
+        url: https://github.com/KikoPlayProject/KikoPlay.git
+        tag: 1.0.3
+        commit: 154bd5e5e9564fa78e4e0c4d82408ab8978bce6a
+        x-checker-data:
+          type: git
+          tag-pattern: ^([\d.]+)$
+      - type: patch
+        path: patches/kikoplay.patch
+      - type: file
+        path: io.github.KikoPlayProject.KikoPlay.metainfo.xml
+      - type: file
+        path: io.github.KikoPlayProject.KikoPlay.png
+
   - name: kikoplay-script
     buildsystem: simple
     build-options:
@@ -201,34 +295,13 @@ modules:
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlayApp.git
-        commit: 504e402573c47abf1a10fff60b54e9c7273e48b3
+        commit: 2b6d08c0ec4eb1b791f916232149b8cca09c240b
         x-checker-data:
           type: json
           url: https://api.github.com/repos/KikoPlayProject/KikoPlayApp/commits
           commit-query: first( .[].sha )
           version-query: first( .[].sha )
           timestamp-query: first( .[].commit.author.date )
-
-  - name: kikoplay
-    buildsystem: qmake
-    config-opts:
-      - LIBS+=-L/app/lib
-    post-install:
-      - install -Dm644 io.github.KikoPlayProject.KikoPlay.metainfo.xml -t /app/share/metainfo/
-      - install -Dm644 io.github.KikoPlayProject.KikoPlay.png -t /app/share/icons/hicolor/128x128/apps
-      - ln -svf /usr/bin/ffmpeg /app/bin/
-      - mkdir -p /app/lib/ffmpeg
-    sources:
-      - type: git
-        url: https://github.com/KikoPlayProject/KikoPlay.git
-        tag: 1.0.3
-        commit: 154bd5e5e9564fa78e4e0c4d82408ab8978bce6a
-        x-checker-data:
-          type: git
-          tag-pattern: ^([\d.]+)$
       - type: patch
-        path: 0001-flatpak.patch
-      - type: file
-        path: io.github.KikoPlayProject.KikoPlay.metainfo.xml
-      - type: file
-        path: io.github.KikoPlayProject.KikoPlay.png
+        path: patches/aisub.patch
+
