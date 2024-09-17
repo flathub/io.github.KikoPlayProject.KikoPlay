@@ -76,9 +76,7 @@ modules:
           - --enable-shared
         sources:
           - type: git
-            url: https://github.com/jpsdr/x264
-            mirror-urls:
-              - https://code.videolan.org/videolan/x264.git
+            url: https://code.videolan.org/videolan/x264.git
             commit: 4613ac3c15fd75cebc4b9f65b7fb95e70a3acce1
             # Every commit to the master branch is considered a release
             # https://code.videolan.org/videolan/x264/-/issues/35
@@ -121,8 +119,6 @@ modules:
         sources:
           - type: git
             url: https://git.linuxtv.org/v4l-utils.git
-            mirror-urls:
-              - https://github.com/gjasny/v4l-utils.git
             tag: v4l-utils-1.28.1
             commit: fc15e229d9d337e46d730f00647821adbbd58548
             x-checker-data:
@@ -138,8 +134,6 @@ modules:
         sources:
           - type: git
             url: https://github.com/FFmpeg/nv-codec-headers.git
-            mirror-urls:
-              - https://git.videolan.org/git/ffmpeg/nv-codec-headers.git
             tag: n12.2.72.0
             commit: c69278340ab1d5559c7d7bf0edf615dc33ddbba7
             x-checker-data:
@@ -183,9 +177,7 @@ modules:
           - /lib/pkgconfig
         sources:
           - type: git
-            url: https://github.com/haasn/libplacebo.git
-            mirror-urls:
-              - https://code.videolan.org/videolan/libplacebo.git
+            url: https://code.videolan.org/videolan/libplacebo.git
             tag: v7.349.0
             commit: 1fd3c7bde7b943fe8985c893310b5269a09b46c5
             x-checker-data:
