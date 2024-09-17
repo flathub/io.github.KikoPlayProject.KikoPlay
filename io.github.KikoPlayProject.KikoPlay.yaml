@@ -43,7 +43,10 @@ modules:
       - -Dbuild-date=false
       - -Dcplayer=false
       - -Dmanpage-build=disabled
+      - -Dsdl2=enabled
+      # - -Dshaderc=enabled
       - -Dvulkan=enabled
+      # - -Dvulkan-interop=enabled
     sources:
       - type: git
         url: https://github.com/mpv-player/mpv.git
@@ -130,6 +133,7 @@ modules:
       - name: libplacebo
         buildsystem: meson
         config-opts:
+          - -Dshaderc=enabled
           - -Dvulkan=enabled
           - -Dd3d11=disabled
           - -Ddemos=false
@@ -142,27 +146,32 @@ modules:
               type: git
               tag-pattern: ^v([\d.]+)$
         modules:
-          - name: glslang
+          - name: shaderc
             buildsystem: cmake-ninja
+            builddir: true
             config-opts:
-              - -DBUILD_SHARED_LIBS=ON
+              - -DSHADERC_SKIP_COPYRIGHT_CHECK=ON
+              - -DSHADERC_SKIP_EXAMPLES=ON
+              - -DSHADERC_SKIP_TESTS=ON
+              - -DSPIRV_SKIP_EXECUTABLES=ON
+              - -DENABLE_GLSLANG_BINARIES=OFF
             cleanup:
               - /bin
               - /include
               - /lib/cmake
+              - /lib/pkgconfig
             sources:
-              - type: archive
-                url: https://github.com/KhronosGroup/glslang/archive/14.3.0.tar.gz
-                sha256: be6339048e20280938d9cb399fcdd06e04f8654d43e170e8cce5a56c9a754284
+              - type: git
+                url: https://github.com/google/shaderc.git
+                tag: v2024.2
+                commit: 3ac03b8ad85a8e328a6182cddee8d05810bd5a2c
                 x-checker-data:
-                  type: anitya
-                  project-id: 205796
-                  stable-only: true
-                  url-template: https://github.com/KhronosGroup/glslang/archive/$version.tar.gz
+                 type: git
+                 tag-pattern: ^v(\d{4}\.\d{1,2})$
               - type: archive
                 url: https://github.com/KhronosGroup/SPIRV-Tools/archive/refs/tags/sdk-1.3.261.1.tar.gz
                 sha256: ead95c626ad482882a141d1aa0ce47b9453871f72c42c0b28d39c82f60a52008
-                dest: External/spirv-tools
+                dest: third_party/spirv-tools
                 x-checker-data:
                   type: anitya
                   stable-only: true
@@ -171,12 +180,20 @@ modules:
               - type: archive
                 url: https://github.com/KhronosGroup/SPIRV-Headers/archive/refs/tags/sdk-1.3.261.1.tar.gz
                 sha256: 32b4c6ae6a2fa9b56c2c17233c8056da47e331f76e117729925825ea3e77a739
-                dest: External/spirv-tools/external/spirv-headers
+                dest: third_party/spirv-headers
                 x-checker-data:
                   type: anitya
                   stable-only: true
                   project-id: 334920
                   url-template: https://github.com/KhronosGroup/SPIRV-Headers/archive/refs/tags/sdk-$version.tar.gz
+              - type: git
+                url: https://github.com/KhronosGroup/glslang.git
+                tag: 14.3.0
+                commit: fa9c3deb49e035a8abcabe366f26aac010f6cbfb
+                dest: third_party/glslang
+                x-checker-data:
+                  type: git
+                  tag-pattern: ^(\d{1,2}\.\d{1,2}\.\d{1,4})$
 
   - name: yt-dlp
     no-autogen: true
@@ -227,6 +244,30 @@ modules:
         url: https://www.lua.org/ftp/lua-5.3.6.tar.gz
         sha256: fc5fd69bb8736323f026672b1b7235da613d7177e72558893a0bdcd320466d60
 
+  - name: kikoplay
+    buildsystem: qmake
+    config-opts:
+      - LIBS+=-L/app/lib
+    post-install:
+      - install -Dm644 io.github.KikoPlayProject.KikoPlay.metainfo.xml -t /app/share/metainfo/
+      - install -Dm644 io.github.KikoPlayProject.KikoPlay.png -t /app/share/icons/hicolor/128x128/apps
+      - ln -svf /usr/bin/ffmpeg /app/bin/
+      - mkdir -p /app/lib/ffmpeg
+    sources:
+      - type: git
+        url: https://github.com/KikoPlayProject/KikoPlay.git
+        tag: 1.0.3
+        commit: 154bd5e5e9564fa78e4e0c4d82408ab8978bce6a
+        x-checker-data:
+          type: git
+          tag-pattern: ^([\d.]+)$
+      - type: patch
+        path: patches/kikoplay.patch
+      - type: file
+        path: io.github.KikoPlayProject.KikoPlay.metainfo.xml
+      - type: file
+        path: io.github.KikoPlayProject.KikoPlay.png
+
   - name: kikoplay-script
     buildsystem: simple
     build-options:
@@ -261,78 +302,6 @@ modules:
           commit-query: first( .[].sha )
           version-query: first( .[].sha )
           timestamp-query: first( .[].commit.author.date )
-      # - type: patch
-      #   path: patches/aisub.patch
-    modules:
-      - name: openblas
-        buildsystem: cmake-ninja
-        config-opts:
-          - -DCMAKE_BUILD_TYPE=Release
-          - -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-          - -DBUILD_TESTING=OFF
-          - -DBUILD_WITHOUT_LAPACK=OFF
-          - -DC_LAPACK=ON
-          - -DDYNAMIC_ARCH=ON
-          - -DBUILD_STATIC_LIBS=OFF
-          - -DBUILD_SHARED_LIBS=ON
-        build-options:
-          no-debuginfo: true
-          arch:
-            aarch64:
-              config-opts:
-                - -DTARGET=ARMV8
-        sources:
-          - type: archive
-            url: https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.28/OpenBLAS-0.3.28.tar.gz
-            sha256: f1003466ad074e9b0c8d421a204121100b0751c96fc6fcf3d1456bd12f8a00a1
-            x-checker-data:
-              type: anitya
-              project-id: 2540
-              url-template: https://github.com/OpenMathLib/OpenBLAS/releases/download/v$version/OpenBLAS-$version.tar.gz
-
-      - name: whispercpp-openblas
-        buildsystem: cmake-ninja
-        config-opts:
-          - -DCMAKE_BUILD_TYPE=Release
-          - -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-          - -DBUILD_SHARED_LIBS=ON
-          - -DWHISPER_BUILD_TESTS=OFF
-          - -DWHISPER_BUILD_EXAMPLES=OFF
-          - -DWHISPER_OPENBLAS=ON
-          - -DBLAS_LIB_PATH=/app/lib/libopenblas.so
-          - -DCMAKE_C_FLAGS='-O3 -I$$C_INCLUDE_PATH/openblas'
-          - -DCMAKE_CXX_FLAGS='-O3 -I$$CPLUS_INCLUDE_PATH/openblas'
-        sources:
-          - type: git
-            url: https://github.com/ggerganov/whisper.cpp.git
-            tag: v1.6.2
-            commit: c7b6988678779901d02ceba1a8212d2c9908956e
-            x-checker-data:
-              type: git
-              tag-pattern: ^v([\d.]+)$
-          - type: patch
-            path: patches/whispercpp.patch
-
-  - name: kikoplay
-    buildsystem: qmake
-    config-opts:
-      - LIBS+=-L/app/lib
-    post-install:
-      - install -Dm644 io.github.KikoPlayProject.KikoPlay.metainfo.xml -t /app/share/metainfo/
-      - install -Dm644 io.github.KikoPlayProject.KikoPlay.png -t /app/share/icons/hicolor/128x128/apps
-      - ln -svf /usr/bin/ffmpeg /app/bin/
-      - mkdir -p /app/lib/ffmpeg
-    sources:
-      - type: git
-        url: https://github.com/KikoPlayProject/KikoPlay.git
-        tag: 1.0.3
-        commit: 154bd5e5e9564fa78e4e0c4d82408ab8978bce6a
-        x-checker-data:
-          type: git
-          tag-pattern: ^([\d.]+)$
       - type: patch
-        path: patches/kikoplay-flatpak.patch
-      - type: file
-        path: io.github.KikoPlayProject.KikoPlay.metainfo.xml
-      - type: file
-        path: io.github.KikoPlayProject.KikoPlay.png
+        path: patches/aisub.patch
+
