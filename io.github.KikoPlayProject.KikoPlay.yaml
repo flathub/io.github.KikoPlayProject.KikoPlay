@@ -66,47 +66,8 @@ modules:
               type: git
               tag-pattern: ^libXpresent-([\d.]+)$
 
-      - name: x264
-        cleanup:
-          - /include
-          - /lib/pkgconfig
-          - /share/man
-        config-opts:
-          - --disable-cli
-          - --enable-shared
-        sources:
-          - type: git
-            url: https://code.videolan.org/videolan/x264.git
-            commit: 4613ac3c15fd75cebc4b9f65b7fb95e70a3acce1
-            # Every commit to the master branch is considered a release
-            # https://code.videolan.org/videolan/x264/-/issues/35
-            x-checker-data:
-              type: json
-              url: https://code.videolan.org/api/v4/projects/536/repository/commits
-              commit-query: first( .[].id )
-              version-query: first( .[].id )
-              timestamp-query: first( .[].committed_date )
-
-      - name: x265
-        buildsystem: cmake
-        subdir: source
-        config-opts:
-          - -DCMAKE_BUILD_TYPE=Release
-          - -DBUILD_STATIC=0
-        cleanup:
-          - /include
-          - /lib/pkgconfig
-          - /share/man
-        sources:
-          - type: git
-            url: https://bitbucket.org/multicoreware/x265_git.git
-            tag: '3.6'
-            commit: aa7f602f7592eddb9d87749be7466da005b556ee
-            x-checker-data:
-              type: git
-              tag-pattern: ^([\d.]+)$
-
       - name: libv4l2
+        buildsystem: meson
         cleanup:
           - /include
           - /lib/pkgconfig
@@ -348,7 +309,6 @@ modules:
           - -DWHISPER_BUILD_TESTS=OFF
           - -DWHISPER_BUILD_EXAMPLES=OFF
           - -DWHISPER_OPENBLAS=ON
-          - -DWHISPER_TARGET_NAME=whisper-openblas
           - -DBLAS_LIB_PATH=/app/lib/libopenblas.so
           - -DCMAKE_C_FLAGS='-O3 -I$$C_INCLUDE_PATH/openblas'
           - -DCMAKE_CXX_FLAGS='-O3 -I$$CPLUS_INCLUDE_PATH/openblas'
