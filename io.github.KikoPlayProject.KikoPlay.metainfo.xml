@@ -42,11 +42,8 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="1e9c0a2e0a0b34ce4f8b97c712afacd85708f848" date="2024-10-01">
-      <description></description>
-    </release>
     <release version="1.0.3" date="2024-06-15">
-      <description/>
+      <description></description>
     </release>
     <release version="1.0.2" date="2024-04-20"/>
     <release version="1.0.1" date="2023-12-30"/>
