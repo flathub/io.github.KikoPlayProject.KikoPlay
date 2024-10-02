@@ -302,6 +302,6 @@ modules:
           commit-query: first( .[].sha )
           version-query: first( .[].sha )
           timestamp-query: first( .[].commit.author.date )
-      - type: patch
-        path: patches/aisub.patch
+      # - type: patch
+      #   path: patches/aisub.patch
 
