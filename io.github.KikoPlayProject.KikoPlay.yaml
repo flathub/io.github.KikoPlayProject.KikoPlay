@@ -43,10 +43,6 @@ modules:
       - -Dbuild-date=false
       - -Dcplayer=false
       - -Dmanpage-build=disabled
-      - -Dsdl2=enabled
-      # - -Dshaderc=enabled
-      - -Dvulkan=enabled
-      # - -Dvulkan-interop=enabled
     sources:
       - type: git
         url: https://github.com/mpv-player/mpv.git
@@ -67,26 +63,6 @@ modules:
             x-checker-data:
               type: git
               tag-pattern: ^libXpresent-([\d.]+)$
-
-      - name: libv4l2
-        buildsystem: meson
-        cleanup:
-          - /include
-          - /lib/pkgconfig
-          - /share/man
-        config-opts:
-          - -Ddoxygen-html=false
-          - -Ddoxygen-doc=disabled
-          - -Dbpf=disabled
-          - -Dudevdir=/app/lib/udev
-        sources:
-          - type: git
-            url: https://git.linuxtv.org/v4l-utils.git
-            tag: v4l-utils-1.28.1
-            commit: fc15e229d9d337e46d730f00647821adbbd58548
-            x-checker-data:
-              type: git
-              tag-pattern: ^v4l-utils-([\d.]+)$
 
       - name: nv-codec-headers
         cleanup:
@@ -302,6 +278,4 @@ modules:
           commit-query: first( .[].sha )
           version-query: first( .[].sha )
           timestamp-query: first( .[].commit.author.date )
-      # - type: patch
-      #   path: patches/aisub.patch
 
