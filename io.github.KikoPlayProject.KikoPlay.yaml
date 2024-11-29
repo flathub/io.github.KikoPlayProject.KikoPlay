@@ -1,6 +1,6 @@
 app-id: io.github.KikoPlayProject.KikoPlay
 runtime: org.kde.Platform
-runtime-version: 5.15-23.08
+runtime-version: 5.15-24.08
 sdk: org.kde.Sdk
 command: KikoPlay
 finish-args:
@@ -25,12 +25,6 @@ cleanup:
   - /man
   - /share/man
   - /share/gtk-doc
-
-add-extensions:
-  org.freedesktop.Platform.ffmpeg-full:
-    directory: lib/ffmpeg
-    version: '23.08'
-    add-ld-path: .
 
 modules:
 
@@ -67,26 +61,6 @@ modules:
             x-checker-data:
               type: git
               tag-pattern: ^libXpresent-([\d.]+)$
-
-      - name: libv4l2
-        buildsystem: meson
-        cleanup:
-          - /include
-          - /lib/pkgconfig
-          - /share/man
-        config-opts:
-          - -Ddoxygen-html=false
-          - -Ddoxygen-doc=disabled
-          - -Dbpf=disabled
-          - -Dudevdir=/app/lib/udev
-        sources:
-          - type: git
-            url: https://git.linuxtv.org/v4l-utils.git
-            tag: v4l-utils-1.28.1
-            commit: fc15e229d9d337e46d730f00647821adbbd58548
-            x-checker-data:
-              type: git
-              tag-pattern: ^v4l-utils-([\d.]+)$
 
       - name: nv-codec-headers
         cleanup:
@@ -195,6 +169,42 @@ modules:
                   type: git
                   tag-pattern: ^(\d{1,2}\.\d{1,2}\.\d{1,4})$
 
+      - name: ffmpeg
+        cleanup:
+          - /share/ffmpeg/examples
+        config-opts:
+          - --disable-debug
+          - --disable-doc
+          - --disable-static
+          - --disable-encoders
+          - --disable-muxers
+          - --enable-programs
+          - --enable-shared
+          - --enable-gnutls
+          - --enable-gpl
+          - --enable-version3
+          - --enable-encoder=png,libwebp,libjxl
+          - --enable-libv4l2
+          - --enable-libdav1d
+          - --enable-libfontconfig
+          - --enable-libfreetype
+          - --enable-libopus
+          - --enable-librsvg
+          - --enable-libvpx
+          - --enable-libmp3lame
+          - --enable-libwebp
+          - --enable-libjxl
+          - --enable-libxml2
+        sources:
+          - type: archive
+            url: https://ffmpeg.org/releases/ffmpeg-7.1.tar.gz
+            sha256: 42a7dc0d1583885d1b8f6559fa7ce28f97acafea6803de6a8f73e3ba229348bd
+            x-checker-data:
+              type: anitya
+              project-id: 5405
+              stable-only: true
+              url-template: https://ffmpeg.org/releases/ffmpeg-$version.tar.gz
+
   - name: yt-dlp
     no-autogen: true
     no-make-install: true
@@ -251,8 +261,6 @@ modules:
     post-install:
       - install -Dm644 io.github.KikoPlayProject.KikoPlay.metainfo.xml -t /app/share/metainfo/
       - install -Dm644 io.github.KikoPlayProject.KikoPlay.png -t /app/share/icons/hicolor/128x128/apps
-      - ln -svf /usr/bin/ffmpeg /app/bin/
-      - mkdir -p /app/lib/ffmpeg
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlay.git
