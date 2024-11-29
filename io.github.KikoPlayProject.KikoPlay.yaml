@@ -16,6 +16,7 @@ finish-args:
   - --talk-name=org.freedesktop.ScreenSaver
   - --persist=.config/kikoplay
   - --env=LC_NUMERIC=C
+  - --env=QT_QPA_PLATFORM=xcb
 cleanup:
   - '*.a'
   - '*.la'
