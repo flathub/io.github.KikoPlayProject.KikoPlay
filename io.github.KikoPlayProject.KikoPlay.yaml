@@ -178,7 +178,6 @@ modules:
           - --disable-static
           - --disable-encoders
           - --disable-muxers
-          - --enable-programs
           - --enable-shared
           - --enable-gnutls
           - --enable-gpl
