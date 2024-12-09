@@ -104,7 +104,7 @@ modules:
         buildsystem: meson
         config-opts:
           - -Dd3d11=disabled
-          - -Ddemos=False
+          - -Ddemos=false
         sources:
           - type: archive
             url: https://code.videolan.org/videolan/libplacebo/-/archive/v7.349.0/libplacebo-v7.349.0.tar.gz
