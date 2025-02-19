@@ -27,7 +27,6 @@ cleanup:
   - /share/gtk-doc
 
 modules:
-
   - name: libmpv
     buildsystem: meson
     config-opts:
@@ -116,22 +115,6 @@ modules:
             x-checker-data:
               type: git
               tag-pattern: ^v([\d.]+)$
-          - type: git
-            url: https://github.com/pallets/jinja.git
-            tag: 3.1.5
-            commit: 877f6e51be8e1765b06d911cfaa9033775f051d1
-            dest: 3rdparty/jinja
-            x-checker-data:
-              type: git
-              tag-pattern: ^([\d.]+)$
-          - type: git
-            url: https://github.com/Dav1dde/glad.git
-            tag: v2.0.8
-            commit: 73db193f853e2ee079bf3ca8a64aa2eaf6459043
-            dest: 3rdparty/glad
-            x-checker-data:
-              type: git
-              tag-pattern: ^v([\d.]+)$
 
       - name: ffmpeg
         cleanup:
@@ -158,17 +141,17 @@ modules:
           - --enable-libwebp
           - --enable-libjxl
           - --enable-libxml2
+          - --enable-libplacebo
           - --enable-vulkan
         sources:
           - type: git
-            url: https://github.com/FFmpeg/FFmpeg.git
-            mirror-urls:
-              - https://git.ffmpeg.org/ffmpeg.git
+            url: https://git.ffmpeg.org/ffmpeg.git
             commit: b08d7969c550a804a59511c7b83f2dd8cc0499b8
             tag: n7.1
             x-checker-data:
               type: git
               tag-pattern: ^n([\d.]+)$
+
 
   - name: yt-dlp
     no-autogen: true
