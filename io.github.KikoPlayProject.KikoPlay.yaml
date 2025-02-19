@@ -83,7 +83,7 @@ modules:
             commit: e46aedea0a0d17da4c4ef49d84b94a7994664ab5
             x-checker-data:
               type: git
-              tag-pattern: ^(\d\.\d{1,3}\.\d{1,2})$
+              tag-pattern: ^([\d.]+)$
 
       - name: uchardet
         buildsystem: cmake-ninja
@@ -91,14 +91,13 @@ modules:
           - -DCMAKE_BUILD_TYPE=Release
           - -DBUILD_STATIC=0
         sources:
-          - type: archive
-            url: https://www.freedesktop.org/software/uchardet/releases/uchardet-0.0.8.tar.xz
-            sha256: e97a60cfc00a1c147a674b097bb1422abd9fa78a2d9ce3f3fdcc2e78a34ac5f0
+          - type: git
+            url: https://gitlab.freedesktop.org/uchardet/uchardet.git
+            tag: v0.0.8
+            commit: ae6302a016088ad07177f86d417b20010053632b
             x-checker-data:
-              type: anitya
-              project-id: 9265
-              stable-only: true
-              url-template: https://www.freedesktop.org/software/uchardet/releases/uchardet-$version.tar.xz
+              type: git
+              tag-pattern: ^v([\d.]+)$
 
       - name: libplacebo
         buildsystem: meson
@@ -106,30 +105,29 @@ modules:
           - -Dd3d11=disabled
           - -Ddemos=false
         sources:
-          - type: archive
-            url: https://code.videolan.org/videolan/libplacebo/-/archive/v7.349.0/libplacebo-v7.349.0.tar.gz
-            sha256: 79120e685a1836344b51b13b6a5661622486a84e4d4a35f6c8d01679a20fbc86
+          - type: git
+            url: https://code.videolan.org/videolan/libplacebo.git
+            tag: v7.349.0
+            commit: 1fd3c7bde7b943fe8985c893310b5269a09b46c5
             x-checker-data:
-              type: anitya
-              project-id: 20101
-              stable-only: true
-              url-template: https://code.videolan.org/videolan/libplacebo/-/archive/v$version/libplacebo-v$version.tar.gz
-          - type: archive
-            url: https://github.com/pallets/jinja/archive/refs/tags/3.1.5.tar.gz
-            sha256: 684d78790cc747f4b4b68b365783af8cac770c2c66d9f414b21c8b8480e019d0
+              type: git
+              tag-pattern: ^v([\d.]+)$
+          - type: git
+            url: https://github.com/pallets/jinja.git
+            tag: 3.1.5
+            commit: 877f6e51be8e1765b06d911cfaa9033775f051d1
             dest: 3rdparty/jinja
             x-checker-data:
-              type: anitya
-              project-id: 3894
-              url-template: https://github.com/pallets/jinja/archive/refs/tags/$version.tar.gz
-          - type: archive
-            url: https://github.com/Dav1dde/glad/archive/refs/tags/v2.0.8.tar.gz
-            sha256: 44f06f9195427c7017f5028d0894f57eb216b0a8f7c4eda7ce883732aeb2d0fc
+              type: git
+              tag-pattern: ^([\d.]+)$
+          - type: git
+            url: https://github.com/Dav1dde/glad.git
+            tag: v2.0.8
+            commit: 73db193f853e2ee079bf3ca8a64aa2eaf6459043
             dest: 3rdparty/glad
             x-checker-data:
-              type: anitya
-              project-id: 300234
-              url-template: https://github.com/Dav1dde/glad/archive/refs/tags/v$version.tar.gz
+              type: git
+              tag-pattern: ^v([\d.]+)$
 
       - name: ffmpeg
         cleanup:
@@ -157,14 +155,15 @@ modules:
           - --enable-libjxl
           - --enable-libxml2
         sources:
-          - type: archive
-            url: https://ffmpeg.org/releases/ffmpeg-7.1.tar.gz
-            sha256: 42a7dc0d1583885d1b8f6559fa7ce28f97acafea6803de6a8f73e3ba229348bd
+          - type: git
+            url: https://github.com/FFmpeg/FFmpeg.git
+            mirror-urls:
+              - https://git.ffmpeg.org/ffmpeg.git
+            commit: b08d7969c550a804a59511c7b83f2dd8cc0499b8
+            tag: n7.1
             x-checker-data:
-              type: anitya
-              project-id: 5405
-              stable-only: true
-              url-template: https://ffmpeg.org/releases/ffmpeg-$version.tar.gz
+              type: git
+              tag-pattern: ^n([\d.]+)$
 
   - name: yt-dlp
     no-autogen: true
@@ -175,14 +174,13 @@ modules:
     post-install:
       - install yt-dlp /app/bin
     sources:
-      - type: archive
-        url: https://github.com/yt-dlp/yt-dlp/archive/refs/tags/2025.02.19.tar.gz
-        sha256: 3942d04ac56b7cbd51881653946662dc84b8628c9405f9e9bacb29d0259e0ab1
+      - type: git
+        url: https://github.com/yt-dlp/yt-dlp.git
+        tag: 2025.02.19
+        commit: 9c3e8b16967cb6582712b6b7e4c107631d3873d0
         x-checker-data:
-          type: anitya
-          project-id: 143399
-          stable-only: true
-          url-template: https://github.com/yt-dlp/yt-dlp/archive/refs/tags/$version.tar.gz
+          type: git
+          tag-pattern: ^(\d{4}\.\d{2}\.\d{2})$
 
   - name: aria2
     config-opts:
@@ -192,14 +190,13 @@ modules:
     post-install:
       - install -Dm755 src/aria2c /app/bin
     sources:
-      - type: archive
-        url: https://github.com/aria2/aria2/releases/download/release-1.37.0/aria2-1.37.0.tar.xz
-        sha256: 60a420ad7085eb616cb6e2bdf0a7206d68ff3d37fb5a956dc44242eb2f79b66b
+      - type: git
+        url: https://github.com/aria2/aria2.git
+        tag: release-1.37.0
+        commit: 02f2d0d8472b3c38c29b4dba8c75ebd5fdd2899a
         x-checker-data:
-          type: anitya
-          project-id: 109
-          url-template: https://github.com/aria2/aria2/releases/download/release-$version/aria2-$version.tar.xz
-          stable-only: true
+          type: git
+          tag-pattern: ^release-([\d.]+)$
 
   - name: lua5.3
     no-autogen: true
@@ -211,9 +208,13 @@ modules:
     post-install:
       - mv /app/lib/liblua.a /app/lib/liblua53.a
     sources:
-      - type: archive
-        url: https://www.lua.org/ftp/lua-5.3.6.tar.gz
-        sha256: fc5fd69bb8736323f026672b1b7235da613d7177e72558893a0bdcd320466d60
+      - type: git
+        url: https://github.com/lua/lua.git
+        tag: v5.3.6
+        commit: 75ea9ccbea7c4886f30da147fb67b693b2624c26
+        # x-checker-data:
+        #   type: git
+        #   tag-pattern: ^v([\d.]+)$
 
   - name: kikoplay
     buildsystem: qmake
@@ -247,13 +248,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlayScript.git
-        commit: 0efa0aa479922ea7881966e3876263ccc3de1cf7
-        # x-checker-data:
-        #   type: json
-        #   url: https://api.github.com/repos/KikoPlayProject/KikoPlayScript/commits
-        #   commit-query: first( .[].sha )
-        #   version-query: first( .[].sha )
-        #   timestamp-query: first( .[].commit.author.date )
+        commit: 5d932e33070cfac2e04b9e393db392d7647ddb29
 
   - name: kikoplay-app
     buildsystem: simple
@@ -265,9 +260,3 @@ modules:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlayApp.git
         commit: 1e9c0a2e0a0b34ce4f8b97c712afacd85708f848
-        # x-checker-data:
-        #   type: json
-        #   url: https://api.github.com/repos/KikoPlayProject/KikoPlayApp/commits
-        #   commit-query: first( .[].sha )
-        #   version-query: first( .[].sha )
-        #   timestamp-query: first( .[].commit.author.date )
