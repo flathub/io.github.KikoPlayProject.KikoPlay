@@ -24,6 +24,7 @@ cleanup:
   - /lib/pkgconfig
   - /man
   - /share/man
+  - /share/doc
   - /share/gtk-doc
 
 modules:
@@ -159,7 +160,7 @@ modules:
       - yt-dlp
       - PYTHON=/usr/bin/python3
     post-install:
-      - install yt-dlp /app/bin
+      - install -Dm755 yt-dlp -t ${FLATPAK_DEST}/bin
     sources:
       - type: git
         url: https://github.com/yt-dlp/yt-dlp.git
@@ -170,12 +171,12 @@ modules:
           tag-pattern: ^(\d{4}\.\d{2}\.\d{2})$
 
   - name: aria2
-    config-opts:
-      - --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt
-      - --disable-libaria2
-    no-make-install: true
-    post-install:
-      - install -Dm755 src/aria2c /app/bin
+    buildsystem: simple
+    build-commands:
+      - autoreconf -i
+      - ./configure --prefix=${FLATPAK_DEST} --without-libaria2 --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt
+      - make -j ${FLATPK_BUILDER_N_JOBS}
+      - make install
     sources:
       - type: git
         url: https://github.com/aria2/aria2.git
@@ -187,13 +188,11 @@ modules:
 
   - name: lua5.3
     no-autogen: true
+    no-make-install: true
     make-args:
-      - MYCFLAGS=-fPIC
-      - linux
-    make-install-args:
-      - INSTALL_TOP=/app
+      - MYCFLAGS=-fPIC -DLUA_USE_LINUX
     post-install:
-      - mv /app/lib/liblua.a /app/lib/liblua53.a
+      - install -Dm644 liblua.a ${FLATPAK_DEST}/lib/liblua53.a
     sources:
       - type: git
         url: https://github.com/lua/lua.git
