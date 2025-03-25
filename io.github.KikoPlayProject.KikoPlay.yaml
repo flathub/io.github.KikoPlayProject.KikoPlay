@@ -9,13 +9,13 @@ finish-args:
   - --share=network
   - --filesystem=xdg-videos
   - --filesystem=xdg-download
-  - --socket=x11
+  - --socket=wayland
+  - --socket=fallback-x11
   - --socket=pulseaudio
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
   - --talk-name=org.freedesktop.ScreenSaver
   - --persist=.config/kikoplay
-  - --env=QT_QPA_PLATFORM=xcb
 cleanup:
   - '*.a'
   - '*.la'
@@ -208,21 +208,18 @@ modules:
       - LIBS+=-L/app/lib
     post-install:
       - install -Dm644 io.github.KikoPlayProject.KikoPlay.metainfo.xml -t /app/share/metainfo/
-      - install -Dm644 io.github.KikoPlayProject.KikoPlay.png -t /app/share/icons/hicolor/128x128/apps
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlay.git
-        tag: 1.0.3
-        commit: 154bd5e5e9564fa78e4e0c4d82408ab8978bce6a
-        x-checker-data:
-          type: git
-          tag-pattern: ^([\d.]+)$
+        # tag: 1.0.3
+        commit: 8a239df07beb4b17e595c0945c7b535753a52b6a
+        # x-checker-data:
+        #   type: git
+        #   tag-pattern: ^([\d.]+)$
       - type: patch
-        path: patches/kikoplay.patch
+        path: patches/qmake-install.patch
       - type: file
         path: io.github.KikoPlayProject.KikoPlay.metainfo.xml
-      - type: file
-        path: io.github.KikoPlayProject.KikoPlay.png
 
   - name: kikoplay-script
     buildsystem: simple
