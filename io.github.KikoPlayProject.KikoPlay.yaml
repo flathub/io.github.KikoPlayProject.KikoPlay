@@ -212,11 +212,11 @@ modules:
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlay.git
-        tag: 1.0.3
-        commit: 154bd5e5e9564fa78e4e0c4d82408ab8978bce6a
-        x-checker-data:
-          type: git
-          tag-pattern: ^([\d.]+)$
+        # tag: 1.0.3
+        commit: 045fbf8356dd80e1c182a7e3837ada60f7a24d3c
+        # x-checker-data:
+        #   type: git
+        #   tag-pattern: ^([\d.]+)$
       - type: patch
         path: patches/qmake-install.patch
       - type: file
