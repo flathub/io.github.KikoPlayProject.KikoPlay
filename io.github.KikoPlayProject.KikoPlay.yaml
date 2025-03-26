@@ -3,6 +3,7 @@ runtime: org.kde.Platform
 runtime-version: 5.15-24.08
 sdk: org.kde.Sdk
 command: KikoPlay
+rename-desktop-file: kikoplay.desktop
 finish-args:
   - --device=dri
   - --share=ipc
@@ -164,8 +165,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/yt-dlp/yt-dlp.git
-        tag: 2025.03.25
-        commit: 336b33e72fe0105a33c40c8e5afdff720e17afdb
+        tag: 2025.03.26
+        commit: 6eaa574c8217ea9b9c5177fece0714fa622da34c
         x-checker-data:
           type: git
           tag-pattern: ^(\d{4}\.\d{2}\.\d{2})$
@@ -208,21 +209,18 @@ modules:
       - LIBS+=-L/app/lib
     post-install:
       - install -Dm644 io.github.KikoPlayProject.KikoPlay.metainfo.xml -t /app/share/metainfo/
-      - install -Dm644 io.github.KikoPlayProject.KikoPlay.png -t /app/share/icons/hicolor/128x128/apps
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlay.git
-        tag: 1.0.3
-        commit: 154bd5e5e9564fa78e4e0c4d82408ab8978bce6a
-        x-checker-data:
-          type: git
-          tag-pattern: ^([\d.]+)$
+        # tag: 1.0.3
+        commit: 045fbf8356dd80e1c182a7e3837ada60f7a24d3c
+        # x-checker-data:
+        #   type: git
+        #   tag-pattern: ^([\d.]+)$
       - type: patch
-        path: patches/kikoplay.patch
+        path: patches/qmake-install.patch
       - type: file
         path: io.github.KikoPlayProject.KikoPlay.metainfo.xml
-      - type: file
-        path: io.github.KikoPlayProject.KikoPlay.png
 
   - name: kikoplay-script
     buildsystem: simple
