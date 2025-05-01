@@ -165,27 +165,23 @@ modules:
     sources:
       - type: git
         url: https://github.com/yt-dlp/yt-dlp.git
-        tag: 2025.03.31
-        commit: 349f36606fa7fb658216334a73ac7825c13503c2
+        tag: 2025.04.30
+        commit: b77e5a553a5d91bd059c3e3f1f3698be417132bf
         x-checker-data:
           type: git
           tag-pattern: ^(\d{4}\.\d{2}\.\d{2})$
 
   - name: aria2
-    buildsystem: simple
-    build-commands:
-      - autoreconf -i
-      - ./configure --prefix=${FLATPAK_DEST} --without-libaria2 --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt
-      - make -j ${FLATPK_BUILDER_N_JOBS}
-      - make install
+    config-opts:
+      - --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt
     sources:
-      - type: git
-        url: https://github.com/aria2/aria2.git
-        tag: release-1.37.0
-        commit: 02f2d0d8472b3c38c29b4dba8c75ebd5fdd2899a
+      - type: archive
+        sha256: 60a420ad7085eb616cb6e2bdf0a7206d68ff3d37fb5a956dc44242eb2f79b66b
+        url: https://github.com/aria2/aria2/releases/download/release-1.37.0/aria2-1.37.0.tar.xz
         x-checker-data:
-          type: git
-          tag-pattern: ^release-([\d.]+)$
+          type: anitya
+          project-id: 109
+          url-template: https://github.com/aria2/aria2/releases/download/release-$version/aria2-$version.tar.xz
 
   - name: lua5.3
     no-autogen: true
