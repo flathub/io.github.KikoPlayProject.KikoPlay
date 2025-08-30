@@ -183,7 +183,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlayScript.git
-        commit: 1c9a8f1b5fb7259cf9812aa483812f2b541be631
+        commit: 706f19f681ef5e2c4a6a8a25ea9de8c911b623ae
 
   - name: kikoplay-app
     buildsystem: simple
