@@ -2,21 +2,24 @@ app-id: io.github.KikoPlayProject.KikoPlay
 runtime: org.kde.Platform
 runtime-version: '6.9'
 sdk: org.kde.Sdk
+base: io.qt.qtwebengine.BaseApp
+base-version: '6.9'
 command: KikoPlay
 rename-desktop-file: kikoplay.desktop
 finish-args:
   - --device=dri
-  - --share=ipc
   - --share=network
-  - --filesystem=xdg-videos
-  - --filesystem=xdg-download
-  - --socket=x11
+  - --share=ipc
+  - --socket=wayland
+  - --socket=fallback-x11
   - --socket=pulseaudio
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
   - --talk-name=org.freedesktop.ScreenSaver
+  - --filesystem=xdg-videos
+  - --filesystem=xdg-download
   - --persist=.config/kikoplay
-  - --env=QT_QPA_PLATFORM=xcb
+
 cleanup:
   - '*.a'
   - '*.la'
@@ -33,7 +36,8 @@ add-extensions:
     directory: lib/ffmpeg
     add-ld-path: .
 cleanup-commands:
-  - mkdir -p ${FLATPAK_DEST}/lib/ffmpeg
+  - mkdir -p /app/lib/ffmpeg
+  - /app/cleanup-BaseApp.sh
 
 modules:
   - name: libmpv
@@ -154,26 +158,20 @@ modules:
           project-id: 109
           url-template: https://github.com/aria2/aria2/releases/download/release-$version/aria2-$version.tar.xz
 
-  - name: lua5.3
-    no-autogen: true
-    no-make-install: true
-    make-args:
-      - MYCFLAGS=-fPIC -DLUA_USE_LINUX
-    post-install:
-      - install -Dm644 liblua.a ${FLATPAK_DEST}/lib/liblua53.a
-    sources:
-      - type: git
-        url: https://github.com/lua/lua.git
-        tag: v5.3.6
-        commit: 75ea9ccbea7c4886f30da147fb67b693b2624c26
-        # x-checker-data:
-        #   type: git
-        #   tag-pattern: ^v([\d.]+)$
-
   - name: kikoplay
     buildsystem: qmake
+    build-options:
+      arch:
+        aarch64:
+          prepend-pkg-config-path: /app/lib/aarch64-linux-gnu/pkgconfig
+        x86_64:
+          prepend-pkg-config-path: /app/lib/x86_64-linux-gnu/pkgconfig
+      env:
+        - QMAKEPATH=/app
     config-opts:
-      - LIBS+=-L/app/lib
+      - QMAKE_INCDIR+=/app/include/QtWebEngine
+      - QMAKE_INCDIR+=/app/include/QtWebEngineCore
+      - QMAKE_INCDIR+=/app/include/QtWebEngineWidgets
     post-install:
       - install -Dm644 io.github.KikoPlayProject.KikoPlay.metainfo.xml -t /app/share/metainfo/
     sources:
