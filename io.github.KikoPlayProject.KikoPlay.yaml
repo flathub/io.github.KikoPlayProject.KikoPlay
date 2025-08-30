@@ -156,6 +156,8 @@ modules:
 
   - name: kikoplay
     buildsystem: qmake
+    config-opts:
+      - LIBS+=-L/app/lib
     post-install:
       - install -Dm644 io.github.KikoPlayProject.KikoPlay.metainfo.xml -t /app/share/metainfo/
     sources:
