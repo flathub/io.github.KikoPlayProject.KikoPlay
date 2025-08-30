@@ -1,6 +1,6 @@
 app-id: io.github.KikoPlayProject.KikoPlay
 runtime: org.kde.Platform
-runtime-version: 6.9
+runtime-version: '6.9'
 sdk: org.kde.Sdk
 command: KikoPlay
 rename-desktop-file: kikoplay.desktop
@@ -153,6 +153,22 @@ modules:
           type: anitya
           project-id: 109
           url-template: https://github.com/aria2/aria2/releases/download/release-$version/aria2-$version.tar.xz
+
+  - name: lua5.3
+    no-autogen: true
+    no-make-install: true
+    make-args:
+      - MYCFLAGS=-fPIC -DLUA_USE_LINUX
+    post-install:
+      - install -Dm644 liblua.a ${FLATPAK_DEST}/lib/liblua53.a
+    sources:
+      - type: git
+        url: https://github.com/lua/lua.git
+        tag: v5.3.6
+        commit: 75ea9ccbea7c4886f30da147fb67b693b2624c26
+        # x-checker-data:
+        #   type: git
+        #   tag-pattern: ^v([\d.]+)$
 
   - name: kikoplay
     buildsystem: qmake
