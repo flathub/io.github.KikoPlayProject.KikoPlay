@@ -33,7 +33,7 @@ add-extensions:
     directory: lib/ffmpeg
     add-ld-path: .
 cleanup-commands:
-  - mkdir -p ${FLATPAK_DEST}/lib/ffmpeg
+  - mkdir -p /app/lib/ffmpeg
 
 modules:
   - name: libmpv
@@ -154,26 +154,8 @@ modules:
           project-id: 109
           url-template: https://github.com/aria2/aria2/releases/download/release-$version/aria2-$version.tar.xz
 
-  - name: lua5.3
-    no-autogen: true
-    no-make-install: true
-    make-args:
-      - MYCFLAGS=-fPIC -DLUA_USE_LINUX
-    post-install:
-      - install -Dm644 liblua.a ${FLATPAK_DEST}/lib/liblua53.a
-    sources:
-      - type: git
-        url: https://github.com/lua/lua.git
-        tag: v5.3.6
-        commit: 75ea9ccbea7c4886f30da147fb67b693b2624c26
-        # x-checker-data:
-        #   type: git
-        #   tag-pattern: ^v([\d.]+)$
-
   - name: kikoplay
     buildsystem: qmake
-    config-opts:
-      - LIBS+=-L/app/lib
     post-install:
       - install -Dm644 io.github.KikoPlayProject.KikoPlay.metainfo.xml -t /app/share/metainfo/
     sources:
@@ -199,7 +181,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlayScript.git
-        commit: 5d932e33070cfac2e04b9e393db392d7647ddb29
+        commit: 1c9a8f1b5fb7259cf9812aa483812f2b541be631
 
   - name: kikoplay-app
     buildsystem: simple
@@ -210,4 +192,4 @@ modules:
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlayApp.git
-        commit: 1e9c0a2e0a0b34ce4f8b97c712afacd85708f848
+        commit: e14235dff81408d3047148276de646d93947c875
