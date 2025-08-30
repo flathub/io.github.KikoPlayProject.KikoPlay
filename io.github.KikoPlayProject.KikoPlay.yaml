@@ -1,6 +1,6 @@
 app-id: io.github.KikoPlayProject.KikoPlay
 runtime: org.kde.Platform
-runtime-version: 5.15-24.08
+runtime-version: 6.9
 sdk: org.kde.Sdk
 command: KikoPlay
 rename-desktop-file: kikoplay.desktop
@@ -154,22 +154,6 @@ modules:
           project-id: 109
           url-template: https://github.com/aria2/aria2/releases/download/release-$version/aria2-$version.tar.xz
 
-  - name: lua5.3
-    no-autogen: true
-    no-make-install: true
-    make-args:
-      - MYCFLAGS=-fPIC -DLUA_USE_LINUX
-    post-install:
-      - install -Dm644 liblua.a ${FLATPAK_DEST}/lib/liblua53.a
-    sources:
-      - type: git
-        url: https://github.com/lua/lua.git
-        tag: v5.3.6
-        commit: 75ea9ccbea7c4886f30da147fb67b693b2624c26
-        # x-checker-data:
-        #   type: git
-        #   tag-pattern: ^v([\d.]+)$
-
   - name: kikoplay
     buildsystem: qmake
     config-opts:
@@ -180,7 +164,7 @@ modules:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlay.git
         # tag: 1.0.3
-        commit: 045fbf8356dd80e1c182a7e3837ada60f7a24d3c
+        commit: 9f13361bf3ad0efa34a69e983d9f1c98cfc59f0f
         # x-checker-data:
         #   type: git
         #   tag-pattern: ^([\d.]+)$
@@ -199,7 +183,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlayScript.git
-        commit: 5d932e33070cfac2e04b9e393db392d7647ddb29
+        commit: 1c9a8f1b5fb7259cf9812aa483812f2b541be631
 
   - name: kikoplay-app
     buildsystem: simple
@@ -210,4 +194,4 @@ modules:
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlayApp.git
-        commit: 1e9c0a2e0a0b34ce4f8b97c712afacd85708f848
+        commit: e14235dff81408d3047148276de646d93947c875
