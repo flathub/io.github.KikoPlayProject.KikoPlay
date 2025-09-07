@@ -1,9 +1,9 @@
 app-id: io.github.KikoPlayProject.KikoPlay
 runtime: org.kde.Platform
-runtime-version: '6.9'
+runtime-version: '6.8'
 sdk: org.kde.Sdk
 base: io.qt.qtwebengine.BaseApp
-base-version: '6.9'
+base-version: '6.8'
 command: KikoPlay
 rename-desktop-file: kikoplay.desktop
 finish-args:
@@ -30,13 +30,8 @@ cleanup:
   - /share/man
   - /share/doc
   - /share/gtk-doc
-add-extensions:
-  org.freedesktop.Platform.ffmpeg-full:
-    version: '24.08'
-    directory: lib/ffmpeg
-    add-ld-path: .
+
 cleanup-commands:
-  - mkdir -p /app/lib/ffmpeg
   - /app/cleanup-BaseApp.sh
 
 modules:
@@ -66,8 +61,8 @@ modules:
         sources:
           - type: git
             url: https://gitlab.freedesktop.org/xorg/lib/libxpresent.git
-            tag: libXpresent-1.0.1
-            commit: 37507b5f44332accfb1064ee69a4f6a833994747
+            tag: libXpresent-1.0.2
+            commit: 4d92149372461bf575e8a09b1064a2884c38c3aa
             x-checker-data:
               type: git
               tag-pattern: ^libXpresent-([\d.]+)$
@@ -231,6 +226,9 @@ modules:
     builddir: true
     config-opts:
       - -Dprotobuf_BUILD_TESTS=OFF
+    cleanup:
+      - /bin
+      - /include
     sources:
       - type: git
         url: https://github.com/protocolbuffers/protobuf.git
@@ -252,16 +250,16 @@ modules:
       - type: archive
         only-arches:
           - x86_64
-        url: https://github.com/microsoft/onnxruntime/releases/download/v1.16.1/onnxruntime-linux-x64-1.16.1.tgz
-        sha256: 53a0f03f71587ed602e99e82773132fc634b74c2d227316fbfd4bf67181e72ed
+        url: https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-linux-x64-1.22.0.tgz
+        sha256: 8344d55f93d5bc5021ce342db50f62079daf39aaafb5d311a451846228be49b3
         x-checker-data:
           type: git
           tag-pattern: ^v([\d.]+)$
       - type: archive
         only-arches:
           - aarch64
-        url: https://github.com/microsoft/onnxruntime/releases/download/v1.16.1/onnxruntime-linux-aarch64-1.16.1.tgz
-        sha256: f10851b62eb44f9e811134737e7c6edd15733d2c1549cb6ce403808e9c047385
+        url: https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-linux-aarch64-1.22.0.tgz
+        sha256: bb76395092d150b52c7092dc6b8f2fe4d80f0f3bf0416d2f269193e347e24702
         x-checker-data:
           type: git
           tag-pattern: ^v([\d.]+)$
@@ -277,6 +275,7 @@ modules:
       env:
         - QMAKEPATH=/app
     config-opts:
+      - LIBS+=-L/app/lib
       - QMAKE_INCDIR+=/app/include/QtWebEngine
       - QMAKE_INCDIR+=/app/include/QtWebEngineCore
       - QMAKE_INCDIR+=/app/include/QtWebEngineWidgets
@@ -292,6 +291,10 @@ modules:
         #   tag-pattern: ^([\d.]+)$
       - type: patch
         path: patches/qmake-install.patch
+      - type: patch
+        path: patches/disable-dandanapi.patch
+      - type: patch
+        path: patches/fix-build.patch
       - type: file
         path: io.github.KikoPlayProject.KikoPlay.metainfo.xml
 
