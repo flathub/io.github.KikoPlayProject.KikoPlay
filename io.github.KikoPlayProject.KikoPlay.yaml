@@ -140,8 +140,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/yt-dlp/yt-dlp.git
-        tag: 2025.08.27
-        commit: 487a90c8efe74644b14a1324374473960def41ae
+        tag: 2025.09.05
+        commit: 7c27965ff6495f9cb8774a0264bc77b49de57207
         x-checker-data:
           type: git
           tag-pattern: ^(\d{4}\.\d{2}\.\d{2})$
@@ -178,7 +178,7 @@ modules:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlay.git
         # tag: 1.0.3
-        commit: 9f13361bf3ad0efa34a69e983d9f1c98cfc59f0f
+        commit: ca40d6471bff90ab21623b23491dadae8b22d217
         # x-checker-data:
         #   type: git
         #   tag-pattern: ^([\d.]+)$
@@ -197,7 +197,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlayScript.git
-        commit: 1c9a8f1b5fb7259cf9812aa483812f2b541be631
+        commit: 706f19f681ef5e2c4a6a8a25ea9de8c911b623ae
 
   - name: kikoplay-app
     buildsystem: simple
