@@ -62,8 +62,8 @@ modules:
         sources:
           - type: git
             url: https://gitlab.freedesktop.org/xorg/lib/libxpresent.git
-            tag: libXpresent-1.0.1
-            commit: 37507b5f44332accfb1064ee69a4f6a833994747
+            tag: libXpresent-1.0.2
+            commit: 4d92149372461bf575e8a09b1064a2884c38c3aa
             x-checker-data:
               type: git
               tag-pattern: ^libXpresent-([\d.]+)$
