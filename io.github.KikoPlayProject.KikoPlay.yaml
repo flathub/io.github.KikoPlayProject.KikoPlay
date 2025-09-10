@@ -246,9 +246,10 @@ modules:
       # Unzip deb package
       - bsdtar --to-stdout -xf kikoplay.deb data.tar.zst | bsdtar -xf -
       # Install binaries
-      - cp -r usr/bin ${FLATPAK_DEST}/
-      - cp -r usr/share ${FLATPAK_DEST}/
-      - cp -r usr/share/web ${FLATPAK_DEST}/bin/
+      - cp -rv usr/bin ${FLATPAK_DEST}/
+      - cp -rv usr/share ${FLATPAK_DEST}/
+      - cp -rv usr/share/kikoplay/web ${FLATPAK_DEST}/bin/
+      - rm -rv ${FLATPAK_DEST}/share/kikoplay
     sources:
       - type: file
         url: https://github.com/pugaizai/KikoPlay/releases/download/2.0.0/kikoplay-amd64.deb
