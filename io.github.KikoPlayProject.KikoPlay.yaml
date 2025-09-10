@@ -244,7 +244,7 @@ modules:
       no-debuginfo: true
     build-commands:
       # Unzip deb package
-      - bsdtar --to-stdout -xf Kazumi.deb data.tar.zst | bsdtar -xf -
+      - bsdtar --to-stdout -xf kikoplay.deb data.tar.zst | bsdtar -xf -
       # Install binaries
       - cp -r usr/bin ${FLATPAK_DEST}/
       - cp -r usr/share ${FLATPAK_DEST}/
