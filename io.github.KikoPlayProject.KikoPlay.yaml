@@ -152,7 +152,6 @@ modules:
           - --disable-debug
           - --disable-doc
           - --disable-static
-          - --enable-programs
           - --enable-protocol=file,http,tcp,udp,hls,https,tls,httpproxy
           - --enable-demuxer=mov,flv,hls
           - --enable-shared
