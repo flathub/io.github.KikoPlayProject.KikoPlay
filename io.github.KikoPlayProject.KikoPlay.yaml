@@ -252,7 +252,7 @@ modules:
     sources:
       - type: file
         url: https://github.com/pugaizai/KikoPlay/releases/download/2.0.0/kikoplay-amd64.deb
-        sha256: 10b8e60af9b7e57b18fd0f03c17d2faffc94c6cb0d0edea556c5bf3f420a2c18
+        sha256: 56d1bb698f083eb78d1df7b18115340fd5ce390d3c3074603c511ece6daf956d
         only-arches: [x86_64]
         dest-filename: kikoplay.deb
         x-checker-data:
@@ -263,7 +263,7 @@ modules:
             | .browser_download_url
       - type: file
         url: https://github.com/pugaizai/KikoPlay/releases/download/2.0.0/kikoplay-arm64.deb
-        sha256: 400e05e92abab9c36cac918b5a044e838fcdc9c6a5f42c94eaa0318ec71a4827
+        sha256: 17271da0cc018302fb2cf659af9bd42c191602bdb728d7afe99a76fe43e2bb27
         only-arches: [aarch64]
         dest-filename: kikoplay.deb
         x-checker-data:
