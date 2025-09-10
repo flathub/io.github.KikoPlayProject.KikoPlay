@@ -1,11 +1,10 @@
 app-id: io.github.KikoPlayProject.KikoPlay
 runtime: org.kde.Platform
-runtime-version: '6.8'
+runtime-version: '6.9'
 sdk: org.kde.Sdk
 base: io.qt.qtwebengine.BaseApp
-base-version: '6.8'
+base-version: '6.9'
 command: KikoPlay
-rename-desktop-file: kikoplay.desktop
 finish-args:
   - --device=dri
   - --share=network
@@ -153,11 +152,7 @@ modules:
           - --disable-debug
           - --disable-doc
           - --disable-static
-          - --disable-programs
-          - --disable-encoders
-          - --disable-muxers
-          - --disable-demuxers
-          - --disable-protocols
+          - --enable-programs
           - --enable-protocol=file,http,tcp,udp,hls,https,tls,httpproxy
           - --enable-demuxer=mov,flv,hls
           - --enable-shared
@@ -221,26 +216,6 @@ modules:
           project-id: 109
           url-template: https://github.com/aria2/aria2/releases/download/release-$version/aria2-$version.tar.xz
 
-  - name: protobuf
-    buildsystem: cmake-ninja
-    builddir: true
-    config-opts:
-      - -Dprotobuf_BUILD_TESTS=OFF
-    cleanup:
-      - /bin
-      - /include
-    sources:
-      - type: git
-        url: https://github.com/protocolbuffers/protobuf.git
-        commit: 4fbd1111a292d04746c732573025e3251de0bb9c
-        tag: v32.0
-        x-checker-data:
-          type: json
-          url: https://api.github.com/repos/protocolbuffers/protobuf/releases/latest
-          tag-query: .tag_name
-          timestamp-query: .published_at
-          version-query: $tag | sub("^[vV]"; "")
-
   - name: onnxruntime
     buildsystem: simple
     build-commands:
@@ -265,38 +240,39 @@ modules:
           tag-pattern: ^v([\d.]+)$
 
   - name: kikoplay
-    buildsystem: qmake
+    buildsystem: simple
     build-options:
-      arch:
-        aarch64:
-          prepend-pkg-config-path: /app/lib/aarch64-linux-gnu/pkgconfig
-        x86_64:
-          prepend-pkg-config-path: /app/lib/x86_64-linux-gnu/pkgconfig
-      env:
-        - QMAKEPATH=/app
-    config-opts:
-      - LIBS+=-L/app/lib
-      - QMAKE_INCDIR+=/app/include/QtWebEngine
-      - QMAKE_INCDIR+=/app/include/QtWebEngineCore
-      - QMAKE_INCDIR+=/app/include/QtWebEngineWidgets
-    post-install:
-      - install -Dm644 io.github.KikoPlayProject.KikoPlay.metainfo.xml -t /app/share/metainfo/
+      no-debuginfo: true
+    build-commands:
+      # Unzip deb package
+      - bsdtar --to-stdout -xf Kazumi.deb data.tar.zst | bsdtar -xf -
+      # Install binaries
+      - cp -r usr/bin ${FLATPAK_DEST}/
+      - cp -r usr/share ${FLATPAK_DEST}/
+      - cp -r usr/share/web ${FLATPAK_DEST}/bin/
     sources:
-      - type: git
-        url: https://github.com/KikoPlayProject/KikoPlay.git
-        # tag: 1.0.3
-        commit: ca40d6471bff90ab21623b23491dadae8b22d217
-        # x-checker-data:
-        #   type: git
-        #   tag-pattern: ^([\d.]+)$
-      - type: patch
-        path: patches/qmake-install.patch
-      - type: patch
-        path: patches/disable-dandanapi.patch
-      - type: patch
-        path: patches/fix-build.patch
       - type: file
-        path: io.github.KikoPlayProject.KikoPlay.metainfo.xml
+        url: https://github.com/pugaizai/KikoPlay/releases/download/2.0.0/kikoplay-amd64.deb
+        sha256: 10b8e60af9b7e57b18fd0f03c17d2faffc94c6cb0d0edea556c5bf3f420a2c18
+        only-arches: [x86_64]
+        dest-filename: kikoplay.deb
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/pugaizai/KikoPlay/releases/latest
+          version-query: .tag_name
+          url-query: .assets[] | select(.name | contains("amd64.deb"))
+            | .browser_download_url
+      - type: file
+        url: https://github.com/pugaizai/KikoPlay/releases/download/2.0.0/kikoplay-arm64.deb
+        sha256: 400e05e92abab9c36cac918b5a044e838fcdc9c6a5f42c94eaa0318ec71a4827
+        only-arches: [aarch64]
+        dest-filename: kikoplay.deb
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/pugaizai/KikoPlay/releases/latest
+          version-query: .tag_name
+          url-query: .assets[] | select(.name | contains("arm64.deb"))
+            | .browser_download_url
 
   - name: kikoplay-script
     buildsystem: simple
