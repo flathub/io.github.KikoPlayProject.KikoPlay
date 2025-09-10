@@ -243,13 +243,12 @@ modules:
     build-options:
       no-debuginfo: true
     build-commands:
-      # Unzip deb package
       - bsdtar --to-stdout -xf kikoplay.deb data.tar.zst | bsdtar -xf -
-      # Install binaries
-      - cp -rv usr/bin ${FLATPAK_DEST}/
-      - cp -rv usr/share ${FLATPAK_DEST}/
+      - install -Dvm755 usr/bin/KikoPlay -t ${FLATPAK_DEST}/bin
+      - install -Dvm644 usr/share/metainfo/io.github.KikoPlayProject.KikoPlay.metainfo.xml -t ${FLATPAK_DEST}/share/metainfo
+      - install -Dvm644 usr/share/applications/io.github.KikoPlayProject.KikoPlay.desktop -t ${FLATPAK_DEST}/share/applications
+      - install -Dvm644 usr/share/icons/hicolor/128x128/apps/io.github.KikoPlayProject.KikoPlay.png -t ${FLATPAK_DEST}/share/icons/hicolor/128x128/apps
       - cp -rv usr/share/kikoplay/web ${FLATPAK_DEST}/bin/
-      - rm -rv ${FLATPAK_DEST}/share/kikoplay
     sources:
       - type: file
         url: https://github.com/pugaizai/KikoPlay/releases/download/2.0.0/kikoplay-amd64.deb
