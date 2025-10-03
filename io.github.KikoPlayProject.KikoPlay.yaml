@@ -1,22 +1,24 @@
 app-id: io.github.KikoPlayProject.KikoPlay
 runtime: org.kde.Platform
-runtime-version: 5.15-24.08
+runtime-version: 6.8
 sdk: org.kde.Sdk
+base: io.qt.qtwebengine.BaseApp
+base-version: '6.8'
 command: KikoPlay
-rename-desktop-file: kikoplay.desktop
 finish-args:
   - --device=dri
   - --share=ipc
   - --share=network
   - --filesystem=xdg-videos
   - --filesystem=xdg-download
-  - --socket=x11
+  - --socket=wayland
+  - --socket=fallback-x11
   - --socket=pulseaudio
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
   - --talk-name=org.freedesktop.ScreenSaver
   - --persist=.config/kikoplay
-  - --env=QT_QPA_PLATFORM=xcb
+  - --env=QTWEBENGINEPROCESS_PATH=/app/bin/QtWebEngineProcess
 cleanup:
   - '*.a'
   - '*.la'
@@ -34,113 +36,27 @@ add-extensions:
     add-ld-path: .
 cleanup-commands:
   - mkdir -p /app/lib/ffmpeg
+  - /app/cleanup-BaseApp.sh
 
 modules:
-  - name: libmpv
-    buildsystem: meson
-    config-opts:
-      - -Dlibmpv=true
-      - -Dlua=disabled
-      - -Ddebug=false
-      - -Dbuild-date=false
-      - -Dcplayer=false
-      - -Dmanpage-build=disabled
-      - -Dvulkan=enabled
-      - -Dsdl2=enabled
+  - mpv/mpv.yaml
+
+  - name: onnxruntime
+    buildsystem: simple
+    build-commands:
+      - "cp -r --no-target-directory ./include /app/include"
+      - "cp -r --no-target-directory ./lib /app/lib"
     sources:
-      - type: git
-        url: https://github.com/mpv-player/mpv.git
-        tag: v0.40.0
-        commit: e48ac7ce08462f5e33af6ef9deeac6fa87eef01e
-        x-checker-data:
-          type: git
-          tag-pattern: ^v([\d.]+)$
-
-    modules:
-      - name: libXpresent
-        buildsystem: autotools
-        sources:
-          - type: git
-            url: https://gitlab.freedesktop.org/xorg/lib/libxpresent.git
-            tag: libXpresent-1.0.2
-            commit: 4d92149372461bf575e8a09b1064a2884c38c3aa
-            x-checker-data:
-              type: git
-              tag-pattern: ^libXpresent-([\d.]+)$
-
-      - name: nv-codec-headers
-        cleanup:
-          - '*'
-        no-autogen: true
-        make-install-args:
-          - PREFIX=/app
-        sources:
-          - type: git
-            url: https://github.com/FFmpeg/nv-codec-headers.git
-            tag: n13.0.19.0
-            commit: e844e5b26f46bb77479f063029595293aa8f812d
-            x-checker-data:
-              type: git
-              tag-pattern: ^n([\d.]+)$
-
-      - name: libass
-        config-opts:
-          - --disable-static
-        sources:
-          - type: git
-            url: https://github.com/libass/libass.git
-            tag: 0.17.4
-            commit: bbb3c7f1570a4a021e52683f3fbdf74fe492ae84
-            x-checker-data:
-              type: git
-              tag-pattern: ^([\d.]+)$
-
-      - name: uchardet
-        buildsystem: cmake-ninja
-        config-opts:
-          - -DCMAKE_BUILD_TYPE=Release
-          - -DBUILD_STATIC=0
-        sources:
-          - type: git
-            url: https://gitlab.freedesktop.org/uchardet/uchardet.git
-            tag: v0.0.8
-            commit: ae6302a016088ad07177f86d417b20010053632b
-            x-checker-data:
-              type: git
-              tag-pattern: ^v([\d.]+)$
-
-      - name: libplacebo
-        buildsystem: meson
-        config-opts:
-          - -Dvulkan=enabled
-          - -Dshaderc=enabled
-          - -Dd3d11=disabled
-          - -Ddemos=false
-        sources:
-          - type: git
-            url: https://code.videolan.org/videolan/libplacebo.git
-            tag: v7.351.0
-            commit: 3188549fba13bbdf3a5a98de2a38c2e71f04e21e
-            x-checker-data:
-              type: git
-              tag-pattern: ^v([\d.]+)$
-
-  - name: yt-dlp
-    no-autogen: true
-    no-make-install: true
-    make-args:
-      - yt-dlp
-      - PYTHON=/usr/bin/python3
-    post-install:
-      - install -Dm755 yt-dlp -t ${FLATPAK_DEST}/bin
-    sources:
-      - type: git
-        url: https://github.com/yt-dlp/yt-dlp.git
-        tag: 2025.09.26
-        commit: 88e2a2de8e2fb247b3e2c55891625b7a148f09e5
-        x-checker-data:
-          type: git
-          tag-pattern: ^(\d{4}\.\d{2}\.\d{2})$
+      - type: archive
+        only-arches:
+          - x86_64
+        url: https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-linux-x64-1.22.0.tgz
+        sha256: 8344d55f93d5bc5021ce342db50f62079daf39aaafb5d311a451846228be49b3
+      - type: archive
+        only-arches:
+          - aarch64
+        url: https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-linux-aarch64-1.22.0.tgz
+        sha256: bb76395092d150b52c7092dc6b8f2fe4d80f0f3bf0416d2f269193e347e24702
 
   - name: aria2
     config-opts:
@@ -155,23 +71,27 @@ modules:
           url-template: https://github.com/aria2/aria2/releases/download/release-$version/aria2-$version.tar.xz
 
   - name: kikoplay
-    buildsystem: qmake
-    config-opts:
-      - LIBS+=-L/app/lib
-    post-install:
-      - install -Dm644 io.github.KikoPlayProject.KikoPlay.metainfo.xml -t /app/share/metainfo/
+    buildsystem: simple
+    build-options:
+      no-debuginfo: true
+    build-commands:
+      - bsdtar --to-stdout -xvf kikoplay.deb data.* | bsdtar -xvf -
+      - mv usr/share/kikoplay/web usr/bin
+      - rm -r usr/share/kikoplay
+      - cp -a usr/* ${FLATPAK_DEST}
     sources:
-      - type: git
-        url: https://github.com/KikoPlayProject/KikoPlay.git
-        # tag: 1.0.3
-        commit: 045fbf8356dd80e1c182a7e3837ada60f7a24d3c
-        # x-checker-data:
-        #   type: git
-        #   tag-pattern: ^([\d.]+)$
-      - type: patch
-        path: patches/qmake-install.patch
       - type: file
-        path: io.github.KikoPlayProject.KikoPlay.metainfo.xml
+        dest-filename: kikoplay.deb
+        only-arches:
+          - x86_64
+        url: https://github.com/KikoPlayProject/KikoPlay/releases/download/2.0.0/kikoplay-amd64.deb
+        sha256: a3350165d74565ca76bb28034ea40eea6dce2ca3843646e9336b628d75074a87
+      - type: file
+        dest-filename: kikoplay.deb
+        only-arches:
+          - aarch64
+        url: https://github.com/KikoPlayProject/KikoPlay/releases/download/2.0.0/kikoplay-arm64.deb
+        sha256: 0a7ed77ab785f805ddd356081d12512faabeb8f5ab036c7f81af88b47cefaa59
 
   - name: kikoplay-script
     buildsystem: simple
@@ -183,7 +103,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/KikoPlayProject/KikoPlayScript.git
-        commit: 706f19f681ef5e2c4a6a8a25ea9de8c911b623ae
+        commit: 602b9074c3594f2c1f4d65aa83d84f70dfec4740
 
   - name: kikoplay-app
     buildsystem: simple
