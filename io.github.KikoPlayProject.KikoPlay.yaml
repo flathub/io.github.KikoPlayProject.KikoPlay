@@ -189,13 +189,13 @@ modules:
         only-arches:
           - x86_64
         url: https://github.com/KikoPlayProject/KikoPlay/releases/download/2.0.0/kikoplay-amd64.deb
-        sha256: a3350165d74565ca76bb28034ea40eea6dce2ca3843646e9336b628d75074a87
+        sha256: a3bcbb6c4d92bf453990efd772f9c41c7f76ff5712b798c6732b9bab42361712
       - type: file
         dest-filename: kikoplay.deb
         only-arches:
           - aarch64
         url: https://github.com/KikoPlayProject/KikoPlay/releases/download/2.0.0/kikoplay-arm64.deb
-        sha256: 0a7ed77ab785f805ddd356081d12512faabeb8f5ab036c7f81af88b47cefaa59
+        sha256: 25956bdc35f0c99131eabe2ff68d6a4ae5a87457e4e7474bbcc89dbdb0d6a18b
 
   - name: kikoplay-script
     buildsystem: simple
