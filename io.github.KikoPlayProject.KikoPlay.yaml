@@ -42,8 +42,8 @@ modules:
   - name: onnxruntime
     buildsystem: simple
     build-commands:
-      - "cp -r --no-target-directory ./include /app/include"
-      - "cp -r --no-target-directory ./lib /app/lib"
+      - cp -r --no-target-directory ./include /app/include
+      - cp -r --no-target-directory ./lib /app/lib
     sources:
       - type: archive
         only-arches:
@@ -168,8 +168,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/yt-dlp/yt-dlp.git
-        tag: 2025.09.26
-        commit: 88e2a2de8e2fb247b3e2c55891625b7a148f09e5
+        tag: 2025.10.14
+        commit: 264044286dc30a3dcbe48134f6bebda90b3e43a2
         x-checker-data:
           type: git
           tag-pattern: ^(\d{4}\.\d{2}\.\d{2})$
