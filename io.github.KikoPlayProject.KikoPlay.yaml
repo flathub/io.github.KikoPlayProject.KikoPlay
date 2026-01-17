@@ -125,6 +125,7 @@ modules:
         config-opts:
           - -DCMAKE_BUILD_TYPE=Release
           - -DBUILD_STATIC=0
+          - -DCMAKE_POLICY_VERSION_MINIMUM=3.5
         sources:
           - type: git
             url: https://gitlab.freedesktop.org/uchardet/uchardet.git
