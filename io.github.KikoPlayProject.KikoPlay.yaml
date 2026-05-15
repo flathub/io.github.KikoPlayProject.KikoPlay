@@ -1,9 +1,9 @@
 app-id: io.github.KikoPlayProject.KikoPlay
 runtime: org.kde.Platform
-runtime-version: 6.8
+runtime-version: '6.10'
 sdk: org.kde.Sdk
 base: io.qt.qtwebengine.BaseApp
-base-version: '6.8'
+base-version: '6.10'
 command: KikoPlay
 finish-args:
   - --device=dri
@@ -20,24 +20,12 @@ finish-args:
   - --persist=.config/kikoplay
   - --env=QTWEBENGINEPROCESS_PATH=/app/bin/QtWebEngineProcess
 cleanup:
-  - '*.a'
-  - '*.la'
-  - /include
-  - /lib/cmake
-  - /lib/pkgconfig
-  - /man
-  - /share/man
   - /share/doc
-  - /share/gtk-doc
-add-extensions:
-  org.freedesktop.Platform.ffmpeg-full:
-    version: '24.08'
-    directory: lib/ffmpeg
-    add-ld-path: .
+  - /share/man
+  - '*.la'
+  - '*.a'
 cleanup-commands:
-  - mkdir -p /app/lib/ffmpeg
   - /app/cleanup-BaseApp.sh
-
 modules:
   - name: onnxruntime
     buildsystem: simple
@@ -99,21 +87,6 @@ modules:
               type: git
               tag-pattern: ^libXpresent-([\d.]+)$
 
-      - name: nv-codec-headers
-        cleanup:
-          - '*'
-        no-autogen: true
-        make-install-args:
-          - PREFIX=/app
-        sources:
-          - type: git
-            url: https://github.com/FFmpeg/nv-codec-headers.git
-            tag: n13.0.19.0
-            commit: e844e5b26f46bb77479f063029595293aa8f812d
-            x-checker-data:
-              type: git
-              tag-pattern: ^n([\d.]+)$
-
       - name: libass
         config-opts:
           - --disable-static
@@ -131,6 +104,8 @@ modules:
         config-opts:
           - -DCMAKE_BUILD_TYPE=Release
           - -DBUILD_STATIC=0
+          - -DBUILD_BINARY=OFF
+          - -DCMAKE_POLICY_VERSION_MINIMUM=3.5
         sources:
           - type: git
             url: https://gitlab.freedesktop.org/uchardet/uchardet.git
